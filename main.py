@@ -40,7 +40,7 @@ class MyWindow(QtWidgets.QMainWindow):
         self.ui.loginButton.clicked.connect(
             lambda: loginButtonClicked("something"))
         self.ui.registerButton.clicked.connect(
-            lambda: registerButtonClicked('johnDoe', 'th1s!saStrongP@ssw0rd', self.conn, self.c))
+            lambda: registerButtonClicked('Alice', '1234', self.conn, self.c))
 
 
 try:
