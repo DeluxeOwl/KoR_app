@@ -26,4 +26,5 @@ def registerButtonClicked(username='', password='', conn=None, c=None):
             print('\t', row)
     except sqlite3.IntegrityError:  # if user is already taken
         print("Username already taken")
+
     conn.commit()
