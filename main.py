@@ -41,6 +41,8 @@ class MyWindow(QtWidgets.QMainWindow):
             lambda: loginButtonClicked("something"))
         self.ui.registerButton.clicked.connect(
             lambda: registerButtonClicked('John', 'strongpassw@@@@@rd', self.conn, self.c))
+        self.ui.forgotpasswordButton.clicked.connect(
+            lambda: forgotpasswordButtonClicked('I forgot it again'))
 
 
 try:
