@@ -13,8 +13,9 @@ class MyWindow(QtWidgets.QMainWindow):
         super(MyWindow, self).__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-
-        self.ui.loginButton.clicked.connect(loginButtonClicked)
+        # Use lambda to be able to use arguments
+        self.ui.loginButton.clicked.connect(
+            lambda: loginButtonClicked("something"))
 
 
 try:
