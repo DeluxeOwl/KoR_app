@@ -25,14 +25,22 @@ class MyWindow(QtWidgets.QMainWindow):
 
     def databaseConnection(self):
         self.conn = sqlite3.connect(self.database)
-        self.conn.close()
+        self.c = self.conn.cursor()
+
+        # Check if table exists,if not,create it
+        self.c.execute(
+            ''' SELECT count(name) FROM sqlite_master WHERE type='table' AND name='user_info' ''')
+        if self.c.fetchone()[0] == 0:
+            self.c.execute(
+                ''' CREATE TABLE user_info (username text,password text,UNIQUE(username))''')
+            self.conn.commit()
 
     def buttonClickActions(self):
         # Use lambda to be able to use arguments
         self.ui.loginButton.clicked.connect(
             lambda: loginButtonClicked("something"))
         self.ui.registerButton.clicked.connect(
-            lambda: registerButtonClicked('JohnDoe', 'password'))
+            lambda: registerButtonClicked('johnDoe', 'th1s!saStrongP@ssw0rd', self.conn, self.c))
 
 
 try:
