@@ -15,7 +15,7 @@ class Ui_MainWindow(object):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(731, 726)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("../images/app_icon.png"),
+        icon.addPixmap(QtGui.QPixmap("./images/app_icon.png"),
                        QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainWindow.setWindowIcon(icon)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
@@ -70,7 +70,7 @@ class Ui_MainWindow(object):
         self.gridLayout_3.addLayout(self.formLayout, 0, 2, 1, 1)
         self.mainImage = QtWidgets.QLabel(self.centralwidget)
         self.mainImage.setText("")
-        self.mainImage.setPixmap(QtGui.QPixmap("../images/main_image.png"))
+        self.mainImage.setPixmap(QtGui.QPixmap("./images/main_image.png"))
         self.mainImage.setObjectName("mainImage")
         self.gridLayout_3.addWidget(self.mainImage, 0, 0, 1, 1)
         self.gridLayout_2.addLayout(self.gridLayout_3, 0, 0, 1, 1)
