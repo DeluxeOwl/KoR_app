@@ -1,21 +1,26 @@
 #!/usr/bin/python3
 from PyQt5 import QtWidgets
 # importing our generated file
-from user_interface.mainPage import Ui_MainWindow
+from UserInterface.mainPage import Ui_MainWindow
+from BackEndActions.ButtonActions import *
 
 import sys
-sys.path.append('~/KorApp/')
 
 
-class mywindow(QtWidgets.QMainWindow):
+class MyWindow(QtWidgets.QMainWindow):
 
     def __init__(self):
-        super(mywindow, self).__init__()
+        super(MyWindow, self).__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
+        self.ui.loginButton.clicked.connect(loginButtonClicked)
 
-app = QtWidgets.QApplication([])
-application = mywindow()
-application.show()
-sys.exit(app.exec())
+
+try:
+    app = QtWidgets.QApplication([])
+    application = MyWindow()
+    application.show()
+    sys.exit(app.exec())
+finally:
+    print("This is executed as the app exits")
