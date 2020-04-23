@@ -116,7 +116,7 @@
        </widget>
       </item>
       <item row="3" column="0">
-       <widget class="QPushButton" name="register_button">
+       <widget class="QPushButton" name="registerButton">
         <property name="text">
          <string>Register</string>
         </property>
