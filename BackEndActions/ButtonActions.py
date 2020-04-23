@@ -14,13 +14,21 @@ def registerButtonClicked(ui, conn=None, c=None):
 
     username = ui.usernameRegInput.text()
     password = ui.passwordRegInput.text()
+    confirmedPassword = ui.confirmRegPasswordInput.text()
 
-    # Use values as tuple,secure
-    tmp = (username, EncryptLibrary.hashPassword(password), None)
-    try:
-        c.execute("INSERT INTO user_info VALUES (?,?,?)", tmp)
-        for row in c.execute("SELECT * FROM user_info"):
-            print('\t', row)
-    except sqlite3.IntegrityError:  # if user is already taken
-        print("Username already taken")
-    conn.commit()
+    if EncryptLibrary.validUsername(username) is False:
+        print("Username must be between 6-20 characters and \nmust contain only letters,numbers and underscores")
+    elif EncryptLibrary.validPassword(password) is False:
+        print("Password must be between 6-20 characters and \nmust contain a letter,a number and a special character")
+    elif password != confirmedPassword:
+        print("Password does not match")
+    else:
+        # Use values as tuple,secure
+        tmp = (username, EncryptLibrary.hashPassword(password), None)
+        try:
+            c.execute("INSERT INTO user_info VALUES (?,?,?)", tmp)
+            for row in c.execute("SELECT * FROM user_info"):
+                print('\t', row)
+        except sqlite3.IntegrityError:  # if user is already taken
+            print("Username already taken")
+        conn.commit()
