@@ -15,7 +15,8 @@ class Ui_RegisterWindow(object):
         RegisterWindow.setObjectName("RegisterWindow")
         RegisterWindow.resize(730, 730)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("../images/app_icon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap("./images/app_icon.png"),
+                       QtGui.QIcon.Normal, QtGui.QIcon.Off)
         RegisterWindow.setWindowIcon(icon)
         self.centralwidget = QtWidgets.QWidget(RegisterWindow)
         self.centralwidget.setObjectName("centralwidget")
@@ -28,12 +29,15 @@ class Ui_RegisterWindow(object):
         self.label = QtWidgets.QLabel(self.centralwidget)
         self.label.setObjectName("label")
         self.gridLayout_2.addWidget(self.label, 1, 1, 1, 1)
-        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.gridLayout_2.addItem(spacerItem, 1, 0, 1, 1)
-        spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem1 = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.gridLayout_2.addItem(spacerItem1, 1, 2, 1, 1)
         self.verticalLayout.addLayout(self.gridLayout_2)
-        spacerItem2 = QtWidgets.QSpacerItem(0, 0, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        spacerItem2 = QtWidgets.QSpacerItem(
+            0, 0, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout.addItem(spacerItem2)
         self.gridLayout_3 = QtWidgets.QGridLayout()
         self.gridLayout_3.setObjectName("gridLayout_3")
@@ -66,11 +70,13 @@ class Ui_RegisterWindow(object):
         self.label_5.setObjectName("label_5")
         self.gridLayout_3.addWidget(self.label_5, 4, 0, 1, 1)
         self.verticalLayout.addLayout(self.gridLayout_3)
-        spacerItem3 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        spacerItem3 = QtWidgets.QSpacerItem(
+            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout.addItem(spacerItem3)
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
-        spacerItem4 = QtWidgets.QSpacerItem(30, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem4 = QtWidgets.QSpacerItem(
+            30, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem4)
         self.verticalLayout_2 = QtWidgets.QVBoxLayout()
         self.verticalLayout_2.setObjectName("verticalLayout_2")
@@ -81,7 +87,8 @@ class Ui_RegisterWindow(object):
         self.cancelRegButton.setObjectName("cancelRegButton")
         self.verticalLayout_2.addWidget(self.cancelRegButton)
         self.horizontalLayout.addLayout(self.verticalLayout_2)
-        spacerItem5 = QtWidgets.QSpacerItem(30, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem5 = QtWidgets.QSpacerItem(
+            30, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem5)
         self.verticalLayout.addLayout(self.horizontalLayout)
         self.verticalLayout_3.addLayout(self.verticalLayout)
@@ -95,13 +102,20 @@ class Ui_RegisterWindow(object):
 
     def retranslateUi(self, RegisterWindow):
         _translate = QtCore.QCoreApplication.translate
-        RegisterWindow.setWindowTitle(_translate("RegisterWindow", "Register Page"))
-        self.label.setText(_translate("RegisterWindow", "<html><head/><body><p><span style=\" font-size:26pt;\">Register</span></p></body></html>"))
-        self.label_2.setText(_translate("RegisterWindow", "<html><head/><body><p><span style=\" font-size:16pt;\">Username :</span></p></body></html>"))
-        self.label_4.setText(_translate("RegisterWindow", "<html><head/><body><p><span style=\" font-size:16pt;\">Confirm Password :</span></p></body></html>"))
+        RegisterWindow.setWindowTitle(
+            _translate("RegisterWindow", "Register Page"))
+        self.label.setText(_translate(
+            "RegisterWindow", "<html><head/><body><p><span style=\" font-size:26pt;\">Register</span></p></body></html>"))
+        self.label_2.setText(_translate(
+            "RegisterWindow", "<html><head/><body><p><span style=\" font-size:16pt;\">Username :</span></p></body></html>"))
+        self.label_4.setText(_translate(
+            "RegisterWindow", "<html><head/><body><p><span style=\" font-size:16pt;\">Confirm Password :</span></p></body></html>"))
         self.roleRegSelect.setItemText(0, _translate("RegisterWindow", "User"))
-        self.roleRegSelect.setItemText(1, _translate("RegisterWindow", "Guest"))
-        self.label_3.setText(_translate("RegisterWindow", "<html><head/><body><p><span style=\" font-size:16pt;\">Password :</span></p></body></html>"))
-        self.label_5.setText(_translate("RegisterWindow", "<html><head/><body><p><span style=\" font-size:16pt;\">Role</span></p></body></html>"))
+        self.roleRegSelect.setItemText(
+            1, _translate("RegisterWindow", "Guest"))
+        self.label_3.setText(_translate(
+            "RegisterWindow", "<html><head/><body><p><span style=\" font-size:16pt;\">Password :</span></p></body></html>"))
+        self.label_5.setText(_translate(
+            "RegisterWindow", "<html><head/><body><p><span style=\" font-size:16pt;\">Role</span></p></body></html>"))
         self.signUpRegButton.setText(_translate("RegisterWindow", "Sign Up"))
         self.cancelRegButton.setText(_translate("RegisterWindow", "Cancel"))
