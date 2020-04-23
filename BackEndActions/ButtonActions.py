@@ -8,7 +8,7 @@ def loginButtonClicked(ui, conn=None, c=None):
     providedPassword = ui.passwordInput.text()
 
     # Stripping username of white spaces
-    if username.strip():
+    if username.strip() and username.strip() != 'None':
         res = c.execute('''SELECT password 
                         FROM user_info
                         WHERE username=? ''',
