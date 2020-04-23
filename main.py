@@ -45,8 +45,20 @@ if __name__ == "__main__":
             ''' SELECT count(name) FROM sqlite_master WHERE type='table' AND name='user_info' ''')
         if cursor.fetchone()[0] == 0:
             cursor.execute(
-                ''' CREATE TABLE user_info (username text,password text,role text,UNIQUE(username))''')
+                ''' CREATE TABLE user_info (username text,
+                                            password text,
+                                            role text,
+                                            UNIQUE(username))''')
             conn.commit()
+
+        # Default admin account
+        cursor.execute(
+            ''' SELECT COUNT(*) FROM user_info WHERE username='admin' ''')
+        if cursor.fetchone()[0] == 0:
+            cursor.execute(
+                "INSERT INTO user_info VALUES (?,?,?)", ('admin', EncryptLibrary.hashPassword('admin'), 'Admin'))
+            conn.commit()
+
         """--------------------"""
 
         app = QtWidgets.QApplication(sys.argv)

@@ -14,6 +14,7 @@ def registerButtonClicked(ui, conn=None, c=None):
 
     username = ui.usernameRegInput.text()
     password = ui.passwordRegInput.text()
+    role = ui.roleRegSelect.currentText()
     confirmedPassword = ui.confirmRegPasswordInput.text()
 
     if EncryptLibrary.validUsername(username) is False:
@@ -24,7 +25,7 @@ def registerButtonClicked(ui, conn=None, c=None):
         print("Password does not match")
     else:
         # Use values as tuple,secure
-        tmp = (username, EncryptLibrary.hashPassword(password), None)
+        tmp = (username, EncryptLibrary.hashPassword(password), role)
         try:
             c.execute("INSERT INTO user_info VALUES (?,?,?)", tmp)
             for row in c.execute("SELECT * FROM user_info"):
