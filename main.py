@@ -22,7 +22,7 @@ def switchToWindow(windowToSwitchTo):
             lambda: switchToWindow(Ui_MainWindow))
         # TODO: take data from labels
         ui.signUpRegButton.clicked.connect(
-            lambda: registerButtonClicked('John', '1234', conn, cursor))
+            lambda: registerButtonClicked(ui, conn, cursor))
 
     # Ui_MainWindow buttons
     if type(ui) is Ui_MainWindow:
@@ -45,7 +45,7 @@ if __name__ == "__main__":
             ''' SELECT count(name) FROM sqlite_master WHERE type='table' AND name='user_info' ''')
         if cursor.fetchone()[0] == 0:
             cursor.execute(
-                ''' CREATE TABLE user_info (username text,password text,UNIQUE(username))''')
+                ''' CREATE TABLE user_info (username text,password text,role text,UNIQUE(username))''')
             conn.commit()
         """--------------------"""
 
