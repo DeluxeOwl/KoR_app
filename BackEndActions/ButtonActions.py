@@ -9,6 +9,10 @@ def loginButtonClicked(ceva=''):
     print(f"Login button clicked {ceva}")
 
 
+def forgotpasswordButtonClicked(ceva=''):
+    print(f"Forgot password button clicked {ceva}")
+
+
 def registerButtonClicked(username='', password='', conn=None, c=None):
 
     def hashPassword(password):
