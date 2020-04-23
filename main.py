@@ -70,4 +70,4 @@ if __name__ == "__main__":
         sys.exit(app.exec_())
     finally:
         print("This is executed as the app exits")
-        # TODO: close database
+        conn.close()
