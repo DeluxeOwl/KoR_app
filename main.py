@@ -20,14 +20,13 @@ def switchToWindow(windowToSwitchTo):
     if type(ui) is Ui_RegisterWindow:
         ui.cancelRegButton.clicked.connect(
             lambda: switchToWindow(Ui_MainWindow))
-        # TODO: take data from labels
         ui.signUpRegButton.clicked.connect(
             lambda: registerButtonClicked(ui, conn, cursor))
 
     # Ui_MainWindow buttons
     if type(ui) is Ui_MainWindow:
         ui.loginButton.clicked.connect(
-            lambda: loginButtonClicked("something"))
+            lambda: loginButtonClicked(ui, conn, cursor))
 
         ui.registerButton.clicked.connect(
             lambda: switchToWindow(Ui_RegisterWindow))
@@ -70,7 +69,7 @@ if __name__ == "__main__":
         ui.setupUi(MainWindow)
 
         ui.loginButton.clicked.connect(
-            lambda: loginButtonClicked("something"))
+            lambda: loginButtonClicked(ui, conn, cursor))
 
         ui.registerButton.clicked.connect(
             lambda: switchToWindow(Ui_RegisterWindow))

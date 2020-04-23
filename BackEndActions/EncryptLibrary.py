@@ -13,6 +13,18 @@ def hashPassword(password):
     return (salt + pwdhash).decode('ascii')
 
 
+def verifyPassword(storedPassword, providedPassword):
+    salt = storedPassword[:64]
+    storedPassword = storedPassword[64:]
+    passwordHash = hashlib.pbkdf2_hmac('sha512',
+                                       providedPassword.encode('utf-8'),
+                                       salt.encode('ascii'),
+                                       100000)
+    passwordHash = binascii.hexlify(passwordHash).decode('ascii')
+
+    return passwordHash == storedPassword
+
+
 def validPassword(password):
     # between 6-20 characters,at least one letter,one number,one special symbol
     pattern = re.compile(

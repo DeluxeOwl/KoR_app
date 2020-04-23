@@ -2,8 +2,20 @@ import sqlite3
 from BackEndActions import EncryptLibrary
 
 
-def loginButtonClicked(ceva=''):
-    print(f"Login button clicked {ceva}")
+def loginButtonClicked(ui, conn=None, c=None):
+    username = ui.usernameInput.text()
+    providedPassword = ui.passwordInput.text()
+
+    res = c.execute('''SELECT password 
+                    FROM user_info
+                    WHERE username=? ''',
+                    (username, ))
+    storedPassword = res.fetchone()[0]
+
+    if EncryptLibrary.verifyPassword(storedPassword, providedPassword):
+        print("Logged in as", username)
+    else:
+        print("Invalid username or password")
 
 
 def forgotpasswordButtonClicked(ceva=''):
