@@ -18,7 +18,8 @@ def switchToWindow(windowToSwitchTo):
 
     # Ui_RegisterWindow buttons
     if type(ui) is Ui_RegisterWindow:
-        ui.pushButton.clicked.connect(lambda: switchToWindow(Ui_MainWindow))
+        ui.cancelRegButton.clicked.connect(
+            lambda: switchToWindow(Ui_MainWindow))
     # Ui_MainWindow buttons
     if type(ui) is Ui_MainWindow:
         ui.loginButton.clicked.connect(
