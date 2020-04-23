@@ -31,6 +31,9 @@ def switchToWindow(windowToSwitchTo):
         ui.registerButton.clicked.connect(
             lambda: switchToWindow(Ui_RegisterWindow))
 
+        ui.forgotpasswordButton.clicked.connect(
+            lambda: forgotpasswordButtonClicked(ui, conn, cursor))
+
 
 if __name__ == "__main__":
     try:
@@ -73,6 +76,9 @@ if __name__ == "__main__":
 
         ui.registerButton.clicked.connect(
             lambda: switchToWindow(Ui_RegisterWindow))
+
+        ui.forgotpasswordButton.clicked.connect(
+            lambda: forgotpasswordButtonClicked(ui, conn, cursor))
 
         """Add more MainWindow related buttons above and in switchToWindow"""
 

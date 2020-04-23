@@ -3,23 +3,29 @@ from BackEndActions import EncryptLibrary
 
 
 def loginButtonClicked(ui, conn=None, c=None):
+    # TODO: pass switchToWindow function
     username = ui.usernameInput.text()
     providedPassword = ui.passwordInput.text()
 
-    res = c.execute('''SELECT password 
-                    FROM user_info
-                    WHERE username=? ''',
-                    (username, ))
-    storedPassword = res.fetchone()[0]
+    # Stripping username of white spaces
+    if username.strip():
+        res = c.execute('''SELECT password 
+                        FROM user_info
+                        WHERE username=? ''',
+                        (username, ))
+        storedPassword = res.fetchone()[0]
 
-    if EncryptLibrary.verifyPassword(storedPassword, providedPassword):
-        print("Logged in as", username)
+        if EncryptLibrary.verifyPassword(storedPassword, providedPassword):
+            print("Logged in as", username)
+        else:
+            print("Invalid username or password")
     else:
         print("Invalid username or password")
 
 
-def forgotpasswordButtonClicked(ceva=''):
-    print(f"Forgot password button clicked {ceva}")
+def forgotpasswordButtonClicked(ui, conn, c):
+    for row in c.execute("SELECT * FROM user_info"):
+        print('\t', row[0], row[1])
 
 
 def registerButtonClicked(ui, conn=None, c=None):
@@ -40,8 +46,6 @@ def registerButtonClicked(ui, conn=None, c=None):
         tmp = (username, EncryptLibrary.hashPassword(password), role)
         try:
             c.execute("INSERT INTO user_info VALUES (?,?,?)", tmp)
-            for row in c.execute("SELECT * FROM user_info"):
-                print('\t', row)
         except sqlite3.IntegrityError:  # if user is already taken
             print("Username already taken")
         conn.commit()
