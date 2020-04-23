@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 from PyQt5 import QtWidgets
-# importing our generated file
+
 from UserInterface.mainPage import Ui_MainWindow
 from UserInterface.registerPage import Ui_RegisterWindow
 from BackEndActions.ButtonActions import *
@@ -20,6 +20,10 @@ def switchToWindow(windowToSwitchTo):
     if type(ui) is Ui_RegisterWindow:
         ui.cancelRegButton.clicked.connect(
             lambda: switchToWindow(Ui_MainWindow))
+        # TODO: take data from labels
+        ui.signUpRegButton.clicked.connect(
+            lambda: registerButtonClicked('John', '1234', conn, cursor))
+
     # Ui_MainWindow buttons
     if type(ui) is Ui_MainWindow:
         ui.loginButton.clicked.connect(
@@ -30,22 +34,40 @@ def switchToWindow(windowToSwitchTo):
 
 
 if __name__ == "__main__":
-    app = QtWidgets.QApplication(sys.argv)
+    try:
+        """start database"""
+        database_path = os.path.dirname(
+            os.path.abspath(__file__))+'/BackEndActions/users.db'
+        conn = sqlite3.connect(database_path)
+        cursor = conn.cursor()
+        # Check if table exists,if not,create it
+        cursor.execute(
+            ''' SELECT count(name) FROM sqlite_master WHERE type='table' AND name='user_info' ''')
+        if cursor.fetchone()[0] == 0:
+            cursor.execute(
+                ''' CREATE TABLE user_info (username text,password text,UNIQUE(username))''')
+            conn.commit()
+        """--------------------"""
 
-    """ This needs to be in main only for the first page """
-    MainWindow = QtWidgets.QMainWindow()
+        app = QtWidgets.QApplication(sys.argv)
 
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
+        """ This needs to be in main only for the first page """
+        MainWindow = QtWidgets.QMainWindow()
 
-    ui.loginButton.clicked.connect(
-        lambda: loginButtonClicked("something"))
+        ui = Ui_MainWindow()
+        ui.setupUi(MainWindow)
 
-    ui.registerButton.clicked.connect(
-        lambda: switchToWindow(Ui_RegisterWindow))
+        ui.loginButton.clicked.connect(
+            lambda: loginButtonClicked("something"))
 
-    """Add more MainWindow related buttons above and in switchToWindow"""
+        ui.registerButton.clicked.connect(
+            lambda: switchToWindow(Ui_RegisterWindow))
 
-    MainWindow.show()
+        """Add more MainWindow related buttons above and in switchToWindow"""
 
-    sys.exit(app.exec_())
+        MainWindow.show()
+
+        sys.exit(app.exec_())
+    finally:
+        print("This is executed as the app exits")
+        # TODO: close database
