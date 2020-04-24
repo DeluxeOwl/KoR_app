@@ -11,10 +11,18 @@ import sqlite3
 
 
 def switchToWindow(windowToSwitchTo):
+
+    # Get old window sizes
+    newWidth = MainWindow.frameSize().width()
+    newHeight = MainWindow.frameSize().height()
+
     # Make the window appear
     ui = windowToSwitchTo()
     ui.setupUi(MainWindow)
     MainWindow.show()
+
+    # Adjust the size in case the user stretched the window
+    MainWindow.resize(newWidth, newHeight)
 
     # Ui_RegisterWindow buttons
     if type(ui) is Ui_RegisterWindow:
