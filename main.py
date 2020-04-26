@@ -11,10 +11,18 @@ import sqlite3
 
 
 def switchToWindow(windowToSwitchTo):
+
+    # Get old window sizes
+    newWidth = MainWindow.frameSize().width()
+    newHeight = MainWindow.frameSize().height()
+
     # Make the window appear
     ui = windowToSwitchTo()
     ui.setupUi(MainWindow)
     MainWindow.show()
+
+    # Adjust the size in case the user stretched the window
+    MainWindow.resize(newWidth, newHeight)
 
     # Ui_RegisterWindow buttons
     if type(ui) is Ui_RegisterWindow:
@@ -38,8 +46,7 @@ def switchToWindow(windowToSwitchTo):
 if __name__ == "__main__":
     try:
         """start database"""
-        database_path = os.path.dirname(
-            os.path.abspath(__file__))+'/BackEndActions/users.db'
+        database_path = 'users.db'
         conn = sqlite3.connect(database_path)
         cursor = conn.cursor()
         # Check if table exists,if not,create it
