@@ -14,13 +14,17 @@ def loginButtonClicked(ui, switchBack, conn=None, c=None):
                         FROM user_info
                         WHERE username=? ''',
                         (username, ))
-        storedPassword = res.fetchone()[0]
 
-        if EncryptLibrary.verifyPassword(storedPassword, providedPassword):
-            print("Logged in as", username)
-            switchBack(Ui_LoggedWindow, username)
-        else:
+        try:
+            storedPassword = res.fetchone()[0]
+            if EncryptLibrary.verifyPassword(storedPassword, providedPassword):
+                print("Logged in as", username)
+                switchBack(Ui_LoggedWindow, username)
+            else:
+                print("Invalid username or password")
+        except TypeError:
             print("Invalid username or password")
+
     else:
         print("Invalid username or password")
 

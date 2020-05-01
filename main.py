@@ -72,7 +72,7 @@ if __name__ == "__main__":
             ''' SELECT COUNT(*) FROM user_info WHERE username='admin' ''')
         if cursor.fetchone()[0] == 0:
             cursor.execute(
-                "INSERT INTO user_info VALUES (?,?,?)", ('admin', EncryptLibrary.hashPassword('admin'), 'Admin'))
+                "INSERT INTO user_info VALUES (?,?,?)", ('admin', EncryptLibrary.hashPassword('admin1!'), 'Admin'))
             conn.commit()
 
         """--------------------"""
