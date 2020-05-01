@@ -3,6 +3,7 @@ from PyQt5 import QtWidgets
 
 from UserInterface.mainPage import Ui_MainWindow
 from UserInterface.registerPage import Ui_RegisterWindow
+from UserInterface.dashboard import Ui_LoggedWindow
 from BackEndActions.ButtonActions import *
 
 import sys
@@ -10,7 +11,7 @@ import os
 import sqlite3
 
 
-def switchToWindow(windowToSwitchTo):
+def switchToWindow(windowToSwitchTo, currentUser=None):
 
     # Get old window sizes
     newWidth = MainWindow.frameSize().width()
@@ -29,12 +30,16 @@ def switchToWindow(windowToSwitchTo):
         ui.cancelRegButton.clicked.connect(
             lambda: switchToWindow(Ui_MainWindow))
         ui.signUpRegButton.clicked.connect(
-            lambda: registerButtonClicked(ui, conn, cursor))
+            lambda: registerButtonClicked(ui, switchToWindow, conn, cursor))
+
+    # Ui_LoggedWindow buttons
+    if type(ui) is Ui_LoggedWindow:
+        ui.labelUsername.setText(currentUser)
 
     # Ui_MainWindow buttons
     if type(ui) is Ui_MainWindow:
         ui.loginButton.clicked.connect(
-            lambda: loginButtonClicked(ui, conn, cursor))
+            lambda: loginButtonClicked(ui, switchToWindow, conn, cursor))
 
         ui.registerButton.clicked.connect(
             lambda: switchToWindow(Ui_RegisterWindow))
@@ -79,7 +84,7 @@ if __name__ == "__main__":
         ui.setupUi(MainWindow)
 
         ui.loginButton.clicked.connect(
-            lambda: loginButtonClicked(ui, conn, cursor))
+            lambda: loginButtonClicked(ui, switchToWindow, conn, cursor))
 
         ui.registerButton.clicked.connect(
             lambda: switchToWindow(Ui_RegisterWindow))

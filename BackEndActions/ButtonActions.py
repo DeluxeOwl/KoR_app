@@ -1,15 +1,16 @@
 import sqlite3
 from BackEndActions import EncryptLibrary
+from UserInterface.mainPage import Ui_MainWindow
+from UserInterface.dashboard import Ui_LoggedWindow
 
 
-def loginButtonClicked(ui, conn=None, c=None):
-    # TODO: pass switchToWindow function
+def loginButtonClicked(ui, switchBack, conn=None, c=None):
     username = ui.usernameInput.text()
     providedPassword = ui.passwordInput.text()
 
     # Stripping username of white spaces
     if EncryptLibrary.validUsername(username):
-        res = c.execute('''SELECT password 
+        res = c.execute('''SELECT password
                         FROM user_info
                         WHERE username=? ''',
                         (username, ))
@@ -17,6 +18,7 @@ def loginButtonClicked(ui, conn=None, c=None):
 
         if EncryptLibrary.verifyPassword(storedPassword, providedPassword):
             print("Logged in as", username)
+            switchBack(Ui_LoggedWindow, username)
         else:
             print("Invalid username or password")
     else:
@@ -28,7 +30,7 @@ def forgotpasswordButtonClicked(ui, conn, c):
         print('\t', row[0], row[1])
 
 
-def registerButtonClicked(ui, conn=None, c=None):
+def registerButtonClicked(ui, switchBack, conn=None, c=None):
 
     username = ui.usernameRegInput.text()
     password = ui.passwordRegInput.text()
@@ -46,6 +48,7 @@ def registerButtonClicked(ui, conn=None, c=None):
         tmp = (username, EncryptLibrary.hashPassword(password), role)
         try:
             c.execute("INSERT INTO user_info VALUES (?,?,?)", tmp)
+            switchBack(Ui_MainWindow)
         except sqlite3.IntegrityError:  # if user is already taken
             print("Username already taken")
         conn.commit()
