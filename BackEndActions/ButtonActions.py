@@ -52,3 +52,8 @@ def registerButtonClicked(ui, switchBack, conn=None, c=None):
         except sqlite3.IntegrityError:  # if user is already taken
             print("Username already taken")
         conn.commit()
+
+
+def logoutButtonClicked(switchBack):
+    switchBack(Ui_MainWindow)
+    print("Logged out")

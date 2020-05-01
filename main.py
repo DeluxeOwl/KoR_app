@@ -35,6 +35,8 @@ def switchToWindow(windowToSwitchTo, currentUser=None):
     # Ui_LoggedWindow buttons
     if type(ui) is Ui_LoggedWindow:
         ui.labelUsername.setText(currentUser)
+        ui.pushButtonLogout.clicked.connect(
+            lambda: logoutButtonClicked(switchToWindow))
 
     # Ui_MainWindow buttons
     if type(ui) is Ui_MainWindow:
