@@ -9,7 +9,7 @@ def loginButtonClicked(ui, switchBack, conn=None, c=None):
     providedPassword = ui.passwordInput.text()
 
     # Stripping username of white spaces
-    if EncryptLibrary.validUsername(username):
+    if EncryptLibrary.validUsername(username) and EncryptLibrary.validPassword(providedPassword):
         res = c.execute('''SELECT password
                         FROM user_info
                         WHERE username=? ''',
