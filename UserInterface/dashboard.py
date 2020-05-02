@@ -8,6 +8,7 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+import subprocess
 
 
 class Ui_LoggedWindow(object):
@@ -59,6 +60,7 @@ class Ui_LoggedWindow(object):
 
         self.setDirectory()
 
+        # For the context menu on right click
         self.treeView.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.treeView.customContextMenuRequested.connect(self.context_menu)
 
@@ -82,10 +84,12 @@ class Ui_LoggedWindow(object):
         self.treeView.setRootIndex(self.model.index(
             "/home"+dir))  # Choose directory to display
 
+    # For the context menu on right click
+
     def context_menu(self):
         menu = QtWidgets.QMenu()
-        opena = menu.addAction("Open in new maya")
-        opena.triggered.connect(self.open_file)
+        openButton = menu.addAction("Open")
+        openButton.triggered.connect(self.open_file)
 
         cursor = QtGui.QCursor()
         menu.exec_(cursor.pos())
@@ -94,3 +98,6 @@ class Ui_LoggedWindow(object):
         index = self.treeView.currentIndex()
         file_path = self.model.filePath(index)
         print(file_path)
+
+        # open for windows,xdg-open for linux
+        subprocess.run(['xdg-open', file_path], check=True)
