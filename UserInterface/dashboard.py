@@ -59,6 +59,9 @@ class Ui_LoggedWindow(object):
 
         self.setDirectory()
 
+        self.treeView.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.treeView.customContextMenuRequested.connect(self.context_menu)
+
     def retranslateUi(self, LoggedWindow):
         _translate = QtCore.QCoreApplication.translate
         LoggedWindow.setWindowTitle(_translate("LoggedWindow", "Dashboard"))
@@ -78,3 +81,16 @@ class Ui_LoggedWindow(object):
         self.treeView.setModel(self.model)
         self.treeView.setRootIndex(self.model.index(
             "/home"+dir))  # Choose directory to display
+
+    def context_menu(self):
+        menu = QtWidgets.QMenu()
+        opena = menu.addAction("Open in new maya")
+        opena.triggered.connect(self.open_file)
+
+        cursor = QtGui.QCursor()
+        menu.exec_(cursor.pos())
+
+    def open_file(self):
+        index = self.treeView.currentIndex()
+        file_path = self.model.filePath(index)
+        print(file_path)

@@ -2,6 +2,7 @@ import sqlite3
 from BackEndActions import EncryptLibrary
 from UserInterface.mainPage import Ui_MainWindow
 from UserInterface.dashboard import Ui_LoggedWindow
+from PyQt5 import QtCore
 
 
 def loginButtonClicked(ui, switchBack, conn=None, c=None):
@@ -61,3 +62,7 @@ def registerButtonClicked(ui, switchBack, conn=None, c=None):
 def logoutButtonClicked(switchBack):
     switchBack(Ui_MainWindow)
     print("Logged out")
+
+
+def pushButtonOpenFilesClicked(ui):
+    print("Open files clicked")
