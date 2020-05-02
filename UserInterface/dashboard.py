@@ -9,6 +9,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 import subprocess
+import os
 
 
 class Ui_LoggedWindow(object):
@@ -82,7 +83,7 @@ class Ui_LoggedWindow(object):
                                )              # Get root path
         self.treeView.setModel(self.model)
         self.treeView.setRootIndex(self.model.index(
-            "/home"+dir))  # Choose directory to display
+            os.environ['HOME']+dir))  # Choose directory to display
 
     # For the context menu on right click
 
