@@ -97,7 +97,7 @@ class Ui_LoggedWindow(object):
     def open_file(self):
         index = self.treeView.currentIndex()
         file_path = self.model.filePath(index)
-        print(file_path)
+        print("Opening", file_path)
 
         # open for windows,xdg-open for linux
         subprocess.run(['xdg-open', file_path], check=True)
