@@ -14,8 +14,8 @@ import sqlite3
 def switchToWindow(windowToSwitchTo, currentUser=None):
 
     # Get old window sizes
-    newWidth = MainWindow.frameSize().width()
-    newHeight = MainWindow.frameSize().height()
+    newWidth = MainWindow.frameSize().width() - 8
+    newHeight = MainWindow.frameSize().height() - 33
 
     # Make the window appear
     ui = windowToSwitchTo()
