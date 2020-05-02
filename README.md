@@ -1,13 +1,11 @@
 # KOR app for FIS lab
 ###  by Andrei Surugiu and Bogdan Caliman
-**requires python 3.8**
+**requires python 3.8 and pip3**  
+Can be installed with ``sudo apt install python3-pip``
 
-**NOTE:** images are not showing when installing and installation is not currently recommended,will fix in future updates 
-
-Build using ``python3 setup.py sdist ``  
-Install using ``pyinstaller -F main.py``, file will be in ``./dist``  
-or by using ``python3 setup.py install``
-
+Install by using   ``sudo pip3 install .`` in the KorApp directory.  
+Build using ``python3 setup.py develop ``  
+  
 ![1]
 ![2]
 

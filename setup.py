@@ -8,7 +8,7 @@ setup(
     package_data={
         "": ["*.ui", "*.png", ".jpeg"]
     },
-    install_requires=["PyQt5", "pyinstaller"],
+    install_requires=["pyqt5"],
     python_requires='>=3',
     author="Andrei Surugiu and Bogdan Caliman",
     description="Build package for Kor App",
