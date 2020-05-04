@@ -3,6 +3,7 @@ from BackEndActions import EncryptLibrary
 from UserInterface.mainPage import Ui_MainWindow
 from UserInterface.dashboard import Ui_LoggedWindow
 from PyQt5 import QtCore
+from PyQt5.QtWidgets import QMessageBox
 
 
 def loginButtonClicked(ui, switchBack, conn=None, c=None):
@@ -22,11 +23,14 @@ def loginButtonClicked(ui, switchBack, conn=None, c=None):
                 print("Logged in as", username)
                 switchBack(Ui_LoggedWindow, username)
             else:
+                clickMethod(ui.loginButton, "Invalid username or password")
                 print("Invalid username or password")
         except TypeError:
+            clickMethod(ui.loginButton, "Invalid username or password")
             print("Invalid username or password")
 
     else:
+        clickMethod(ui.loginButton, "Invalid username or password")
         print("Invalid username or password")
 
 
@@ -44,10 +48,13 @@ def registerButtonClicked(ui, switchBack, conn=None, c=None):
 
     if EncryptLibrary.validUsername(username) is False:
         print("Username must be between 6-20 characters and \nmust contain only letters,numbers and underscores")
+        clickMethod(ui.signUpRegButton, "Username must be between 6-20 characters and \nmust contain only letters,numbers and underscores")
     elif EncryptLibrary.validPassword(password) is False:
         print("Password must be between 6-20 characters and \nmust contain a letter,a number and a special character")
+        clickMethod(ui.signUpRegButton, "Password must be between 6-20 characters and \nmust contain a letter,a number and a special character")
     elif password != confirmedPassword:
         print("Password does not match")
+        clickMethod(ui.signUpRegButton, "Password does not match")
     else:
         # Use values as tuple,secure
         tmp = (username, EncryptLibrary.hashPassword(password), role)
@@ -56,6 +63,7 @@ def registerButtonClicked(ui, switchBack, conn=None, c=None):
             switchBack(Ui_MainWindow)
         except sqlite3.IntegrityError:  # if user is already taken
             print("Username already taken")
+            clickMethod(ui.signUpRegButton, "Username already taken")
         conn.commit()
 
 
@@ -66,3 +74,6 @@ def logoutButtonClicked(switchBack):
 
 def pushButtonOpenFilesClicked(ui):
     print("Open files clicked")
+
+def clickMethod(self, msg):
+    QMessageBox.about(self, "Warning", msg)
