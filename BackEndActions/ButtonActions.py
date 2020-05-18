@@ -48,10 +48,12 @@ def registerButtonClicked(ui, switchBack, conn=None, c=None):
 
     if EncryptLibrary.validUsername(username) is False:
         print("Username must be between 6-20 characters and \nmust contain only letters,numbers and underscores")
-        clickMethod(ui.signUpRegButton, "Username must be between 6-20 characters and \nmust contain only letters,numbers and underscores")
+        clickMethod(ui.signUpRegButton,
+                    "Username must be between 6-20 characters and \nmust contain only letters,numbers and underscores")
     elif EncryptLibrary.validPassword(password) is False:
         print("Password must be between 6-20 characters and \nmust contain a letter,a number and a special character")
-        clickMethod(ui.signUpRegButton, "Password must be between 6-20 characters and \nmust contain a letter,a number and a special character")
+        clickMethod(ui.signUpRegButton,
+                    "Password must be between 6-20 characters and \nmust contain a letter,a number and a special character")
     elif password != confirmedPassword:
         print("Password does not match")
         clickMethod(ui.signUpRegButton, "Password does not match")
@@ -74,6 +76,7 @@ def logoutButtonClicked(switchBack):
 
 def pushButtonOpenFilesClicked(ui):
     print("Open files clicked")
+
 
 def clickMethod(self, msg):
     QMessageBox.about(self, "Warning", msg)
