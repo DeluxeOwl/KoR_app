@@ -83,7 +83,7 @@ def logoutButtonClicked(switchBack):
     print("Logged out")
 
 
-def pushButtonOpenFilesClicked(currentUser, conn=None, c=None):
+def pushButtonOpenFilesClicked(ui, currentUser, conn=None, c=None):
     c.execute("SELECT directory FROM user_info WHERE username=?", (currentUser,))
     userDirectory = c.fetchone()[0]
     try:

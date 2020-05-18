@@ -45,7 +45,7 @@ def switchToWindow(windowToSwitchTo, currentUser=None):
         ui.pushButtonLogout.clicked.connect(
             lambda: logoutButtonClicked(switchToWindow))
         ui.pushButtonOpenFiles.clicked.connect(
-            lambda: pushButtonOpenFilesClicked(currentUser, conn, cursor)
+            lambda: pushButtonOpenFilesClicked(ui, currentUser, conn, cursor)
         )
 
     # Ui_MainWindow buttons
