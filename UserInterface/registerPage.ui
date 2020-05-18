@@ -77,27 +77,27 @@
          <widget class="QComboBox" name="comboBoxSecurityQuestion">
           <item>
            <property name="text">
-            <string>What is the name of your pet?</string>
+            <string>What is the name of your pet ?</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>What is your mom's name?</string>
+            <string>What is your mom's name ?</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>In what town do you live?</string>
+            <string>Which town do you live in ?</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>What school do you attend?</string>
+            <string>What school do you attend ?</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>Which is your favorite food?</string>
+            <string>What is your favorite food ?</string>
            </property>
           </item>
          </widget>
