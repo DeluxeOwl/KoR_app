@@ -198,6 +198,10 @@ class Ui_LoggedWindow(object):
         def newfile():
             filename = dialog.ui.getLineEditAnswer()
 
+            if "/" in filename:
+                dialog.ui.changeText("Enter filename:\nInvalid filename")
+                return
+
             # Treat case if no files
             if file_path == '':
                 # treat admin case
