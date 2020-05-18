@@ -1,10 +1,11 @@
 import sqlite3
+import os
+import subprocess
 from BackEndActions import EncryptLibrary
 from UserInterface.mainPage import Ui_MainWindow
 from UserInterface.dashboard import Ui_LoggedWindow
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QMessageBox
-import os
 
 
 def loginButtonClicked(ui, switchBack, conn=None, c=None):
@@ -82,8 +83,13 @@ def logoutButtonClicked(switchBack):
     print("Logged out")
 
 
-def pushButtonOpenFilesClicked(ui):
-    print("Open files clicked")
+def pushButtonOpenFilesClicked(currentUser, conn=None, c=None):
+    c.execute("SELECT directory FROM user_info WHERE username=?", (currentUser,))
+    userDirectory = c.fetchone()[0]
+    try:
+        subprocess.run(['xdg-open', userDirectory], check=True)
+    except subprocess.CalledProcessError:
+        print("Error while opening.")
 
 
 def clickMethod(self, msg):
