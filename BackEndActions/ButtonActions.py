@@ -44,6 +44,10 @@ def registerButtonClicked(ui, switchBack, dataLocation, conn=None, c=None):
 
     username = ui.usernameRegInput.text()
     password = ui.passwordRegInput.text()
+
+    secQuestion = ui.comboBoxSecurityQuestion.currentText()
+    secAnswer = EncryptLibrary.hashPassword(ui.lineEditSecurityAnswer.text())
+
     role = ui.roleRegSelect.currentText()
     confirmedPassword = ui.confirmRegPasswordInput.text()
 
@@ -63,9 +67,9 @@ def registerButtonClicked(ui, switchBack, dataLocation, conn=None, c=None):
         dirLocation = dataLocation+"/"+username
         os.mkdir(dirLocation)
         tmp = (username, EncryptLibrary.hashPassword(
-            password), role, dirLocation)
+            password), role, dirLocation, secQuestion, secAnswer)
         try:
-            c.execute("INSERT INTO user_info VALUES (?,?,?,?)", tmp)
+            c.execute("INSERT INTO user_info VALUES (?,?,?,?,?,?)", tmp)
             switchBack(Ui_MainWindow)
         except sqlite3.IntegrityError:  # if user is already taken
             print("Username already taken")

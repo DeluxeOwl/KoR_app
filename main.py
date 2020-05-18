@@ -82,6 +82,8 @@ if __name__ == "__main__":
                                             password text,
                                             role text,
                                             directory text,
+                                            secQuestion text,
+                                            secAnswer text,
                                             UNIQUE(username))''')
             conn.commit()
 
@@ -90,7 +92,7 @@ if __name__ == "__main__":
             ''' SELECT COUNT(*) FROM user_info WHERE username='admin' ''')
         if cursor.fetchone()[0] == 0:
             cursor.execute(
-                "INSERT INTO user_info VALUES (?,?,?,?)", ('admin', EncryptLibrary.hashPassword('admin1!'), 'Admin', dataLocation))
+                "INSERT INTO user_info VALUES (?,?,?,?,?,?)", ('admin', EncryptLibrary.hashPassword('admin1!'), 'Admin', dataLocation, "", ""))
             conn.commit()
 
         """--------------------"""

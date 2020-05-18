@@ -87,7 +87,7 @@
           </item>
           <item>
            <property name="text">
-            <string>In what town do you live?</string>
+            <string>Where do you live?</string>
            </property>
           </item>
           <item>
@@ -97,7 +97,7 @@
           </item>
           <item>
            <property name="text">
-            <string>Which is your favorite food?</string>
+            <string>What is your favorite food?</string>
            </property>
           </item>
          </widget>
