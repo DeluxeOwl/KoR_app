@@ -30,11 +30,18 @@ def switchToWindow(windowToSwitchTo, currentUser=None):
         ui.cancelRegButton.clicked.connect(
             lambda: switchToWindow(Ui_MainWindow))
         ui.signUpRegButton.clicked.connect(
-            lambda: registerButtonClicked(ui, switchToWindow, conn, cursor))
+            lambda: registerButtonClicked(ui, switchToWindow, dataLocation, conn, cursor))
 
     # Ui_LoggedWindow buttons
     if type(ui) is Ui_LoggedWindow:
         ui.labelUsername.setText(currentUser)
+
+        # We set the user's directory
+        if currentUser == "admin":
+            ui.setDirectory(dataLocation)
+        else:
+            ui.setDirectory(dataLocation+"/"+currentUser)
+
         ui.pushButtonLogout.clicked.connect(
             lambda: logoutButtonClicked(switchToWindow))
         ui.pushButtonOpenFiles.clicked.connect(
@@ -55,6 +62,13 @@ def switchToWindow(windowToSwitchTo, currentUser=None):
 
 if __name__ == "__main__":
     try:
+        dataLocation = os.environ['HOME']+"/KorData"
+        os.mkdir(dataLocation)
+        print("Data location succesfully created at",
+              dataLocation)
+    except FileExistsError:
+        print("Cannot create KorData, directory already exists.")
+    try:
         """start database"""
         database_path = 'users.db'
         conn = sqlite3.connect(database_path)
@@ -67,6 +81,7 @@ if __name__ == "__main__":
                 ''' CREATE TABLE user_info (username text,
                                             password text,
                                             role text,
+                                            directory text,
                                             UNIQUE(username))''')
             conn.commit()
 
@@ -75,7 +90,7 @@ if __name__ == "__main__":
             ''' SELECT COUNT(*) FROM user_info WHERE username='admin' ''')
         if cursor.fetchone()[0] == 0:
             cursor.execute(
-                "INSERT INTO user_info VALUES (?,?,?)", ('admin', EncryptLibrary.hashPassword('admin1!'), 'Admin'))
+                "INSERT INTO user_info VALUES (?,?,?,?)", ('admin', EncryptLibrary.hashPassword('admin1!'), 'Admin', dataLocation))
             conn.commit()
 
         """--------------------"""

@@ -4,6 +4,7 @@ from UserInterface.mainPage import Ui_MainWindow
 from UserInterface.dashboard import Ui_LoggedWindow
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QMessageBox
+import os
 
 
 def loginButtonClicked(ui, switchBack, conn=None, c=None):
@@ -36,10 +37,10 @@ def loginButtonClicked(ui, switchBack, conn=None, c=None):
 
 def forgotpasswordButtonClicked(ui, conn, c):
     for row in c.execute("SELECT * FROM user_info"):
-        print('\t', row[0], row[1])
+        print(row)
 
 
-def registerButtonClicked(ui, switchBack, conn=None, c=None):
+def registerButtonClicked(ui, switchBack, dataLocation, conn=None, c=None):
 
     username = ui.usernameRegInput.text()
     password = ui.passwordRegInput.text()
@@ -59,9 +60,12 @@ def registerButtonClicked(ui, switchBack, conn=None, c=None):
         clickMethod(ui.signUpRegButton, "Password does not match")
     else:
         # Use values as tuple,secure
-        tmp = (username, EncryptLibrary.hashPassword(password), role)
+        dirLocation = dataLocation+"/"+username
+        os.mkdir(dirLocation)
+        tmp = (username, EncryptLibrary.hashPassword(
+            password), role, dirLocation)
         try:
-            c.execute("INSERT INTO user_info VALUES (?,?,?)", tmp)
+            c.execute("INSERT INTO user_info VALUES (?,?,?,?)", tmp)
             switchBack(Ui_MainWindow)
         except sqlite3.IntegrityError:  # if user is already taken
             print("Username already taken")

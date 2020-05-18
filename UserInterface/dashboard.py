@@ -60,8 +60,6 @@ class Ui_LoggedWindow(object):
         self.retranslateUi(LoggedWindow)
         QtCore.QMetaObject.connectSlotsByName(LoggedWindow)
 
-        self.setDirectory()
-
         # For the context menu on right click
         self.treeView.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.treeView.customContextMenuRequested.connect(self.context_menu)
@@ -84,7 +82,7 @@ class Ui_LoggedWindow(object):
                                )              # Get root path
         self.treeView.setModel(self.model)
         self.treeView.setRootIndex(self.model.index(
-            os.environ['HOME']+dir))  # Choose directory to display
+            dir))  # Choose directory to display
 
     # For the context menu on right click
 
@@ -111,7 +109,10 @@ class Ui_LoggedWindow(object):
         print("Opening", file_path)
 
         # open for windows,xdg-open for linux
-        subprocess.run(['xdg-open', file_path], check=True)
+        try:
+            subprocess.run(['xdg-open', file_path], check=True)
+        except subprocess.CalledProcessError:
+            print("Error while opening.")
 
     def rename_file(self):
         index = self.treeView.currentIndex()
@@ -141,6 +142,8 @@ class Ui_LoggedWindow(object):
                     dialog.done(0)
                 except NotADirectoryError:
                     dialog.ui.changeText("Name cannot be blank.")
+                except FileNotFoundError:
+                    dialog.ui.changeText("File not found")
 
         dialog.ui.pushButtonOK.clicked.connect(rename)
 
@@ -195,7 +198,18 @@ class Ui_LoggedWindow(object):
         def newfile():
             filename = dialog.ui.getLineEditAnswer()
 
-            if os.path.isdir(file_path):
+            # Treat case if no files
+            if file_path == '':
+                # treat admin case
+                if self.labelUsername.text() != "admin":
+                    filePathIfNoFiles = os.environ['HOME']+"/" + \
+                        "KorData"+"/" + self.labelUsername.text()+"/"+filename
+                else:
+                    filePathIfNoFiles = os.environ['HOME']+"/" + \
+                        "KorData"+"/" + filename
+                subprocess.run(['touch', filePathIfNoFiles], check=True)
+                dialog.done(0)
+            elif os.path.isdir(file_path):
                 subprocess.run(['touch', file_path+"/"+filename], check=True)
                 dialog.done(0)
             elif os.path.isfile(file_path):
@@ -203,7 +217,10 @@ class Ui_LoggedWindow(object):
                 filenameLength = len(self.model.fileName(index))
                 # Remove it so we only have the path
                 onlyPath = file_path[0:len(file_path)-filenameLength]
-                subprocess.run(['touch', onlyPath+"/"+filename], check=True)
+                print("Length of the file", filenameLength,
+                      "Path of the file", onlyPath)
+                print(onlyPath+filename)
+                subprocess.run(['touch', onlyPath+filename], check=True)
                 dialog.done(0)
 
         dialog.ui.pushButtonOK.clicked.connect(newfile)
