@@ -8,6 +8,7 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from UserInterface.dialog import Ui_Dialog
 import subprocess
 import os
 
@@ -92,6 +93,15 @@ class Ui_LoggedWindow(object):
         openButton = menu.addAction("Open")
         openButton.triggered.connect(self.open_file)
 
+        renameButton = menu.addAction("Rename")
+        renameButton.triggered.connect(self.rename_file)
+
+        deleteButton = menu.addAction("Delete")
+        deleteButton.triggered.connect(self.delete_file)
+
+        newfileButton = menu.addAction("New file")
+        newfileButton.triggered.connect(self.new_file)
+
         cursor = QtGui.QCursor()
         menu.exec_(cursor.pos())
 
@@ -102,3 +112,100 @@ class Ui_LoggedWindow(object):
 
         # open for windows,xdg-open for linux
         subprocess.run(['xdg-open', file_path], check=True)
+
+    def rename_file(self):
+        index = self.treeView.currentIndex()
+        file_path = self.model.filePath(index)
+
+        dialog = QtWidgets.QDialog()
+        dialog.ui = Ui_Dialog()
+        dialog.ui.setupUi(dialog)
+        dialog.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+
+        dialog.ui.changeText("New name:")
+        dialog.ui.pushButtonCancel.clicked.connect(dialog.done)
+
+        def rename():
+            # Get the length of the name of the file
+            filenameLength = len(self.model.fileName(index))
+            # Remove it so we only have the path
+            onlyPath = file_path[0:len(file_path)-filenameLength]
+            # Get the new name
+            newName = dialog.ui.getLineEditAnswer()
+            if newName.isspace():
+                dialog.ui.changeText("Name cannot be blank.")
+            else:
+                try:
+                    os.rename(file_path, onlyPath+newName)
+                    print(file_path, "changed to", onlyPath+newName)
+                    dialog.done(0)
+                except NotADirectoryError:
+                    dialog.ui.changeText("Name cannot be blank.")
+
+        dialog.ui.pushButtonOK.clicked.connect(rename)
+
+        dialog.exec_()
+
+    def delete_file(self):
+        index = self.treeView.currentIndex()
+        file_path = self.model.filePath(index)
+
+        dialog = QtWidgets.QDialog()
+        dialog.ui = Ui_Dialog()
+        dialog.ui.setupUi(dialog)
+        dialog.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        dialog.ui.changeText("Are you sure? y/n")
+
+        dialog.ui.pushButtonCancel.clicked.connect(dialog.done)
+
+        def delete():
+            answer = dialog.ui.getLineEditAnswer()
+            if answer == "y":
+                try:
+                    if os.path.isdir(file_path):
+                        os.rmdir(file_path)
+                    else:
+                        os.remove(file_path)
+                    dialog.done(0)
+                except OSError:
+                    dialog.ui.changeText(
+                        "Are you sure? y/n\nError:Directory not empty")
+            elif answer == "n":
+                dialog.done(0)
+            else:
+                dialog.ui.changeText(
+                    "Are you sure? y/n\nInvalid answer")
+
+        dialog.ui.pushButtonOK.clicked.connect(delete)
+
+        dialog.exec_()
+
+    def new_file(self):
+        index = self.treeView.currentIndex()
+        file_path = self.model.filePath(index)
+
+        dialog = QtWidgets.QDialog()
+        dialog.ui = Ui_Dialog()
+        dialog.ui.setupUi(dialog)
+        dialog.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        dialog.ui.changeText("Enter filename:")
+
+        dialog.ui.pushButtonCancel.clicked.connect(dialog.done)
+
+        def newfile():
+            filename = dialog.ui.getLineEditAnswer()
+
+            if os.path.isdir(file_path):
+                subprocess.run(['touch', file_path+"/"+filename], check=True)
+                dialog.done(0)
+            elif os.path.isfile(file_path):
+                # Get the length of the name of the file
+                filenameLength = len(self.model.fileName(index))
+                # Remove it so we only have the path
+                onlyPath = file_path[0:len(file_path)-filenameLength]
+                subprocess.run(['touch', onlyPath+"/"+filename], check=True)
+                dialog.done(0)
+
+        dialog.ui.pushButtonOK.clicked.connect(newfile)
+
+        dialog.exec_()
