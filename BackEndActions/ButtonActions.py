@@ -78,9 +78,16 @@ def registerButtonClicked(ui, switchBack, dataLocation, conn=None, c=None):
         conn.commit()
 
 
-def logoutButtonClicked(switchBack):
+def logoutButtonClicked(switchBack, userLoggedOut, conn=None, c=None):
     switchBack(Ui_MainWindow)
-    print("Logged out")
+    print("Logged out", userLoggedOut)
+
+    c.execute("SELECT directory FROM user_info WHERE username=?",
+              (userLoggedOut,))
+    userDirectory = c.fetchone()[0]
+
+    # Encrypt when logging out
+    EncryptLibrary.encryptFiles(userDirectory)
 
 
 def pushButtonOpenFilesClicked(ui, currentUser, conn=None, c=None):

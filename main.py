@@ -5,6 +5,7 @@ from UserInterface.mainPage import Ui_MainWindow
 from UserInterface.registerPage import Ui_RegisterWindow
 from UserInterface.dashboard import Ui_LoggedWindow
 from BackEndActions.ButtonActions import *
+from BackEndActions.EncryptLibrary import encryptFiles
 
 import sys
 import os
@@ -37,16 +38,20 @@ def switchToWindow(windowToSwitchTo, currentUser=None):
         ui.labelUsername.setText(currentUser)
 
         # We set the user's directory
+        # TODO : change encrypt password for everyone
         if currentUser == "admin":
             ui.setDirectory(dataLocation)
+            encryptFiles(dataLocation, decrypt=True)
         else:
             # In case the admin deleted the directory
             if not os.path.isdir(dataLocation+"/"+currentUser):
                 os.mkdir(dataLocation+"/"+currentUser)
             ui.setDirectory(dataLocation+"/"+currentUser)
 
+            encryptFiles(dataLocation+"/"+currentUser, decrypt=True)
+
         ui.pushButtonLogout.clicked.connect(
-            lambda: logoutButtonClicked(switchToWindow))
+            lambda: logoutButtonClicked(switchToWindow, currentUser, conn, cursor))
         ui.pushButtonOpenFiles.clicked.connect(
             lambda: pushButtonOpenFilesClicked(ui, currentUser, conn, cursor)
         )
