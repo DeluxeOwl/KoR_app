@@ -40,6 +40,9 @@ def switchToWindow(windowToSwitchTo, currentUser=None):
         if currentUser == "admin":
             ui.setDirectory(dataLocation)
         else:
+            # In case the admin deleted the directory
+            if not os.path.isdir(dataLocation+"/"+currentUser):
+                os.mkdir(dataLocation+"/"+currentUser)
             ui.setDirectory(dataLocation+"/"+currentUser)
 
         ui.pushButtonLogout.clicked.connect(
