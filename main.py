@@ -131,3 +131,4 @@ if __name__ == "__main__":
         print("Closing database ...")
         conn.close()
         print("Done")
+        #TODO encrypt when pressing x
