@@ -1,4 +1,6 @@
 import sqlite3
+import os
+import subprocess
 from BackEndActions import EncryptLibrary
 from UserInterface.mainPage import Ui_MainWindow
 from UserInterface.dashboard import Ui_LoggedWindow
@@ -36,13 +38,17 @@ def loginButtonClicked(ui, switchBack, conn=None, c=None):
 
 def forgotpasswordButtonClicked(ui, conn, c):
     for row in c.execute("SELECT * FROM user_info"):
-        print('\t', row[0], row[1])
+        print(row)
 
 
-def registerButtonClicked(ui, switchBack, conn=None, c=None):
+def registerButtonClicked(ui, switchBack, dataLocation, conn=None, c=None):
 
     username = ui.usernameRegInput.text()
     password = ui.passwordRegInput.text()
+
+    secQuestion = ui.comboBoxSecurityQuestion.currentText()
+    secAnswer = EncryptLibrary.hashPassword(ui.lineEditSecurityAnswer.text())
+
     role = ui.roleRegSelect.currentText()
     confirmedPassword = ui.confirmRegPasswordInput.text()
 
@@ -59,9 +65,12 @@ def registerButtonClicked(ui, switchBack, conn=None, c=None):
         clickMethod(ui.signUpRegButton, "Password does not match")
     else:
         # Use values as tuple,secure
-        tmp = (username, EncryptLibrary.hashPassword(password), role)
+        dirLocation = dataLocation+"/"+username
+        os.mkdir(dirLocation)
+        tmp = (username, EncryptLibrary.hashPassword(
+            password), role, dirLocation, secQuestion, secAnswer)
         try:
-            c.execute("INSERT INTO user_info VALUES (?,?,?)", tmp)
+            c.execute("INSERT INTO user_info VALUES (?,?,?,?,?,?)", tmp)
             switchBack(Ui_MainWindow)
         except sqlite3.IntegrityError:  # if user is already taken
             print("Username already taken")
@@ -69,13 +78,25 @@ def registerButtonClicked(ui, switchBack, conn=None, c=None):
         conn.commit()
 
 
-def logoutButtonClicked(switchBack):
+def logoutButtonClicked(switchBack, userLoggedOut, conn=None, c=None):
     switchBack(Ui_MainWindow)
-    print("Logged out")
+    print("Logged out", userLoggedOut)
+
+    c.execute("SELECT directory FROM user_info WHERE username=?",
+              (userLoggedOut,))
+    userDirectory = c.fetchone()[0]
+
+    # Encrypt when logging out
+    EncryptLibrary.encryptFiles(userDirectory)
 
 
-def pushButtonOpenFilesClicked(ui):
-    print("Open files clicked")
+def pushButtonOpenFilesClicked(ui, currentUser, conn=None, c=None):
+    c.execute("SELECT directory FROM user_info WHERE username=?", (currentUser,))
+    userDirectory = c.fetchone()[0]
+    try:
+        subprocess.run(['xdg-open', userDirectory], check=True)
+    except subprocess.CalledProcessError:
+        print("Error while opening.")
 
 
 def clickMethod(self, msg):

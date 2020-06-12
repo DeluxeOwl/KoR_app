@@ -3,6 +3,7 @@ import hashlib
 import binascii
 import os
 import re
+import pyAesCrypt
 
 
 def hashPassword(password):
@@ -43,3 +44,21 @@ def validUsername(username):
         return True
     else:
         return False
+
+
+def encryptFiles(targetDir="", decrypt=False, password="password"):
+    bufferSize = 64 * 1024
+
+    for root, _, files in os.walk(targetDir, topdown=False):
+        for name in files:
+            filename = os.path.join(root, name)
+
+            if decrypt:
+                print("Decrypting", filename, "...")
+                pyAesCrypt.decryptFile(
+                    filename, filename[:-4], password, bufferSize)
+            else:
+                print("Encrypting", filename, "...")
+                pyAesCrypt.encryptFile(
+                    filename, filename+".aes", password, bufferSize)
+            os.remove(filename)

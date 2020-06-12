@@ -5,6 +5,7 @@ from UserInterface.mainPage import Ui_MainWindow
 from UserInterface.registerPage import Ui_RegisterWindow
 from UserInterface.dashboard import Ui_LoggedWindow
 from BackEndActions.ButtonActions import *
+from BackEndActions.EncryptLibrary import encryptFiles
 
 import sys
 import os
@@ -30,15 +31,29 @@ def switchToWindow(windowToSwitchTo, currentUser=None):
         ui.cancelRegButton.clicked.connect(
             lambda: switchToWindow(Ui_MainWindow))
         ui.signUpRegButton.clicked.connect(
-            lambda: registerButtonClicked(ui, switchToWindow, conn, cursor))
+            lambda: registerButtonClicked(ui, switchToWindow, dataLocation, conn, cursor))
 
     # Ui_LoggedWindow buttons
     if type(ui) is Ui_LoggedWindow:
         ui.labelUsername.setText(currentUser)
+
+        # We set the user's directory
+        # TODO : change encrypt password for everyone
+        if currentUser == "admin":
+            ui.setDirectory(dataLocation)
+            encryptFiles(dataLocation, decrypt=True)
+        else:
+            # In case the admin deleted the directory
+            if not os.path.isdir(dataLocation+"/"+currentUser):
+                os.mkdir(dataLocation+"/"+currentUser)
+            ui.setDirectory(dataLocation+"/"+currentUser)
+
+            encryptFiles(dataLocation+"/"+currentUser, decrypt=True)
+
         ui.pushButtonLogout.clicked.connect(
-            lambda: logoutButtonClicked(switchToWindow))
+            lambda: logoutButtonClicked(switchToWindow, currentUser, conn, cursor))
         ui.pushButtonOpenFiles.clicked.connect(
-            lambda: pushButtonOpenFilesClicked(ui)
+            lambda: pushButtonOpenFilesClicked(ui, currentUser, conn, cursor)
         )
 
     # Ui_MainWindow buttons
@@ -55,6 +70,13 @@ def switchToWindow(windowToSwitchTo, currentUser=None):
 
 if __name__ == "__main__":
     try:
+        dataLocation = os.environ['HOME']+"/KorData"
+        os.mkdir(dataLocation)
+        print("Data location succesfully created at",
+              dataLocation)
+    except FileExistsError:
+        print("Cannot create KorData, directory already exists.")
+    try:
         """start database"""
         database_path = 'users.db'
         conn = sqlite3.connect(database_path)
@@ -67,6 +89,9 @@ if __name__ == "__main__":
                 ''' CREATE TABLE user_info (username text,
                                             password text,
                                             role text,
+                                            directory text,
+                                            secQuestion text,
+                                            secAnswer text,
                                             UNIQUE(username))''')
             conn.commit()
 
@@ -75,7 +100,7 @@ if __name__ == "__main__":
             ''' SELECT COUNT(*) FROM user_info WHERE username='admin' ''')
         if cursor.fetchone()[0] == 0:
             cursor.execute(
-                "INSERT INTO user_info VALUES (?,?,?)", ('admin', EncryptLibrary.hashPassword('admin1!'), 'Admin'))
+                "INSERT INTO user_info VALUES (?,?,?,?,?,?)", ('admin', EncryptLibrary.hashPassword('admin1!'), 'Admin', dataLocation, "", ""))
             conn.commit()
 
         """--------------------"""
@@ -106,3 +131,4 @@ if __name__ == "__main__":
         print("Closing database ...")
         conn.close()
         print("Done")
+        #TODO encrypt when pressing x

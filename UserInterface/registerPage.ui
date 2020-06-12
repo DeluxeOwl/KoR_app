@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>730</width>
+    <width>769</width>
     <height>730</height>
    </rect>
   </property>
@@ -73,6 +73,48 @@
       </item>
       <item>
        <layout class="QGridLayout" name="gridLayout_3">
+        <item row="8" column="1">
+         <widget class="QComboBox" name="comboBoxSecurityQuestion">
+          <item>
+           <property name="text">
+            <string>What is the name of your pet ?</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>What is your mom's name ?</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Where do you live?</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>What school do you attend ?</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>What is your favorite food?</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item row="7" column="0">
+         <spacer name="verticalSpacer_6">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
         <item row="3" column="0">
          <spacer name="verticalSpacer_3">
           <property name="orientation">
@@ -141,7 +183,7 @@
         <item row="6" column="0">
          <widget class="QLabel" name="label_5">
           <property name="text">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:16pt;&quot;&gt;Role&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:16pt;&quot;&gt;Role :&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
          </widget>
         </item>
@@ -184,6 +226,16 @@
            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Whitney,Helvetica Neue,Helvetica,Arial,sans-serif'; font-size:9pt; color:#ff6666; background-color:rgba(4,4,5,0.066667);&quot;&gt;*password must be between 6-20 characters and must contain a letter, a number &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Whitney,Helvetica Neue,Helvetica,Arial,sans-serif'; font-size:9pt; color:#ff6666; background-color:rgba(4,4,5,0.066667);&quot;&gt;&amp;nbsp;&amp;nbsp;and a special character&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
          </widget>
+        </item>
+        <item row="8" column="0">
+         <widget class="QLabel" name="label_8">
+          <property name="text">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:16pt;&quot;&gt;Security question :&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+         </widget>
+        </item>
+        <item row="9" column="1">
+         <widget class="QLineEdit" name="lineEditSecurityAnswer"/>
         </item>
        </layout>
       </item>
