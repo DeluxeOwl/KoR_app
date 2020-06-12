@@ -8,7 +8,7 @@ setup(
     package_data={
         "": ["*.ui", "*.png", ".jpeg"]
     },
-    install_requires=["pyqt5","pyAesCrypt"],
+    install_requires=["pyqt5","pyAesCrypt","cffi"],
     python_requires='>=3',
     author="Andrei Surugiu and Bogdan Caliman",
     description="Build package for Kor App",
