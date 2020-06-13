@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 setup(
     include_package_data=True,
     name="KorApp",
-    version="0.1",
+    version="0.2",
     packages=find_packages(),
     scripts=["main.py"],
     package_data={
