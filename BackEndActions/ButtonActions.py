@@ -117,8 +117,6 @@ def resetPasswordButtonClicked(ui,conn=None,c=None):
         c.execute(
             "SELECT secQuestion,secAnswer FROM user_info WHERE username=?",(username,))
         
-        
-
         try:
             response = c.fetchall()[0]
             secQuestionDB = response[0]
