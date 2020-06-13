@@ -156,6 +156,7 @@ if __name__ == "__main__":
     finally:
         print("Closing database ...")
         conn.close()
-        print("Done")
-        #TODO encrypt when pressing x
+        print("Database closed succesfully")
+        print("Encrypting files ...")
+        EncryptLibrary.encryptFiles(dataLocation)
         
