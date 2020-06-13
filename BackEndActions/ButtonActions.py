@@ -99,15 +99,7 @@ def clickMethod(self, msg):
     QMessageBox.about(self, "Warning", msg)
     
 def resetPasswordButtonClicked(ui,conn=None,c=None):
-    """
-    verify that all fields are valid
-    
-    Take the username
-    verify that it exists in the database
-    check that the password matches
-    check the security question and answer
-    hash the password and update the database"""
-    
+
     username = ui.usernameLineEdit.text()
     newPassword = ui.newPasswordLineEdit.text()
     confirmedPassword = ui.confirmLineEdit.text()
