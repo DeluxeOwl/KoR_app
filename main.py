@@ -65,7 +65,7 @@ def switchToWindow(windowToSwitchTo, currentUser=None):
             lambda: switchToWindow(Ui_RegisterWindow))
 
         ui.forgotpasswordButton.clicked.connect(
-            lambda: forgotpasswordButtonClicked(ui, conn, cursor))
+            lambda: forgotpasswordButtonClicked(ui,switchToWindow, conn, cursor))
 
 
 if __name__ == "__main__":
@@ -120,7 +120,7 @@ if __name__ == "__main__":
             lambda: switchToWindow(Ui_RegisterWindow))
 
         ui.forgotpasswordButton.clicked.connect(
-            lambda: forgotpasswordButtonClicked(ui, conn, cursor))
+            lambda: forgotpasswordButtonClicked(ui,switchToWindow, conn, cursor))
 
         """Add more MainWindow related buttons above and in switchToWindow"""
 
@@ -132,3 +132,4 @@ if __name__ == "__main__":
         conn.close()
         print("Done")
         #TODO encrypt when pressing x
+        

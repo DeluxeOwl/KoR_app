@@ -4,6 +4,7 @@ import subprocess
 from BackEndActions import EncryptLibrary
 from UserInterface.mainPage import Ui_MainWindow
 from UserInterface.dashboard import Ui_LoggedWindow
+from UserInterface.forgotPasswordPage import Ui_ForgotPasswordWindow
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QMessageBox
 
@@ -36,9 +37,8 @@ def loginButtonClicked(ui, switchBack, conn=None, c=None):
         print("Invalid username or password")
 
 
-def forgotpasswordButtonClicked(ui, conn, c):
-    for row in c.execute("SELECT * FROM user_info"):
-        print(row)
+def forgotpasswordButtonClicked(ui,switchBack, conn=None, c=None):
+    switchBack(Ui_ForgotPasswordWindow)
 
 
 def registerButtonClicked(ui, switchBack, dataLocation, conn=None, c=None):
