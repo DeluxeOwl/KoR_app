@@ -4,6 +4,8 @@ from PyQt5 import QtWidgets
 from UserInterface.mainPage import Ui_MainWindow
 from UserInterface.registerPage import Ui_RegisterWindow
 from UserInterface.dashboard import Ui_LoggedWindow
+from UserInterface.forgotPasswordPage import Ui_ForgotPasswordWindow
+from UserInterface.changePassword import Ui_ChangePasswordWindow
 from BackEndActions.ButtonActions import *
 from BackEndActions.EncryptLibrary import encryptFiles
 
@@ -55,6 +57,9 @@ def switchToWindow(windowToSwitchTo, currentUser=None):
         ui.pushButtonOpenFiles.clicked.connect(
             lambda: pushButtonOpenFilesClicked(ui, currentUser, conn, cursor)
         )
+        ui.pushButtonChangePassword.clicked.connect(
+            lambda:switchToWindow(Ui_ChangePasswordWindow,currentUser)
+        )
 
     # Ui_MainWindow buttons
     if type(ui) is Ui_MainWindow:
@@ -65,7 +70,28 @@ def switchToWindow(windowToSwitchTo, currentUser=None):
             lambda: switchToWindow(Ui_RegisterWindow))
 
         ui.forgotpasswordButton.clicked.connect(
-            lambda: forgotpasswordButtonClicked(ui,switchToWindow, conn, cursor))
+            lambda: switchToWindow(Ui_ForgotPasswordWindow))
+        
+    # Ui_ForgotPasswordWindow buttons
+    if type(ui) is Ui_ForgotPasswordWindow:
+        ui.cancelButton.clicked.connect(
+            lambda: switchToWindow(Ui_MainWindow))
+        ui.resetPasswordButton.clicked.connect(
+            lambda:resetPasswordButtonClicked(ui,conn,cursor)
+        )
+        
+    # Ui_ChangePasswordWindow
+    if type(ui) is Ui_ChangePasswordWindow:
+        # Hide the security question if the user is an admin
+        if currentUser=='admin':
+            ui.questionComboBox.hide()
+            ui.answerLineEdit.hide()
+            ui.label_5.hide()
+        ui.cancelButton.clicked.connect(
+            lambda: switchToWindow(Ui_LoggedWindow,currentUser))
+        ui.changePasswordButton.clicked.connect(
+            lambda:changePasswordButtonClicked(ui,conn,cursor,currentUser)
+        )
 
 
 if __name__ == "__main__":
@@ -120,7 +146,7 @@ if __name__ == "__main__":
             lambda: switchToWindow(Ui_RegisterWindow))
 
         ui.forgotpasswordButton.clicked.connect(
-            lambda: forgotpasswordButtonClicked(ui,switchToWindow, conn, cursor))
+            lambda: switchToWindow(Ui_ForgotPasswordWindow))
 
         """Add more MainWindow related buttons above and in switchToWindow"""
 
@@ -130,6 +156,7 @@ if __name__ == "__main__":
     finally:
         print("Closing database ...")
         conn.close()
-        print("Done")
-        #TODO encrypt when pressing x
+        print("Database closed succesfully")
+        print("Encrypting files ...")
+        EncryptLibrary.encryptFiles(dataLocation)
         

@@ -37,10 +37,6 @@ def loginButtonClicked(ui, switchBack, conn=None, c=None):
         print("Invalid username or password")
 
 
-def forgotpasswordButtonClicked(ui,switchBack, conn=None, c=None):
-    switchBack(Ui_ForgotPasswordWindow)
-
-
 def registerButtonClicked(ui, switchBack, dataLocation, conn=None, c=None):
 
     username = ui.usernameRegInput.text()
@@ -101,3 +97,94 @@ def pushButtonOpenFilesClicked(ui, currentUser, conn=None, c=None):
 
 def clickMethod(self, msg):
     QMessageBox.about(self, "Warning", msg)
+    
+def resetPasswordButtonClicked(ui,conn=None,c=None):
+
+    username = ui.usernameLineEdit.text()
+    newPassword = ui.newPasswordLineEdit.text()
+    confirmedPassword = ui.confirmLineEdit.text()
+    
+    secQuestion=ui.questionComboBox.currentText()
+    
+    answer=ui.answerLineEdit.text()
+    
+    if not EncryptLibrary.validUsername(username) or not EncryptLibrary.validPassword(newPassword):
+        clickMethod(ui.resetPasswordButton,"Invalid username or password")
+    elif newPassword!=confirmedPassword:
+        clickMethod(ui.resetPasswordButton,"Passwords do not match")
+    else:
+        # select the username,check if it exists,then check if the secQ matches
+        c.execute(
+            "SELECT secQuestion,secAnswer FROM user_info WHERE username=?",(username,))
+        
+        try:
+            response = c.fetchall()[0]
+            secQuestionDB = response[0]
+            secAnswerDB = response[1]
+        except:
+            response=None
+            clickMethod(ui.resetPasswordButton,"Invalid username")
+            return
+
+            
+        if secQuestionDB!=secQuestion:
+            clickMethod(ui.resetPasswordButton,"Invalid question or answer")
+        elif EncryptLibrary.verifyPassword(secAnswerDB,answer):
+            c.execute(
+                "UPDATE user_info SET password=? WHERE username=?",(EncryptLibrary.hashPassword(newPassword),username))
+            conn.commit()
+            clickMethod(ui.resetPasswordButton,"Password changed succesfully!")
+        else:
+            clickMethod(ui.resetPasswordButton,"Invalid question or answer")
+            
+def changePasswordButtonClicked(ui,conn=None,c=None,currentUser=None):
+
+    username = currentUser
+    newPassword = ui.newPasswordLineEdit.text()
+    confirmedPassword = ui.confirmLineEdit.text()
+    
+    if currentUser!='admin':
+        secQuestion=ui.questionComboBox.currentText()
+        
+        answer=ui.answerLineEdit.text()
+        
+        if not EncryptLibrary.validPassword(newPassword):
+            clickMethod(ui.changePasswordButton,"Invalid password")
+        elif newPassword!=confirmedPassword:
+            clickMethod(ui.changePasswordButton,"Passwords do not match")
+        else:
+            # select the username,check if it exists,then check if the secQ matches
+            c.execute(
+                "SELECT secQuestion,secAnswer FROM user_info WHERE username=?",(username,))
+            
+            try:
+                response = c.fetchall()[0]
+                secQuestionDB = response[0]
+                secAnswerDB = response[1]
+            except:
+                response=None
+                clickMethod(ui.changePasswordButton,"CRITICAL ERROR")
+                return
+
+                
+            if secQuestionDB!=secQuestion:
+                clickMethod(ui.changePasswordButton,"Invalid question or answer")
+            elif EncryptLibrary.verifyPassword(secAnswerDB,answer):
+                c.execute(
+                    "UPDATE user_info SET password=? WHERE username=?",(EncryptLibrary.hashPassword(newPassword),username))
+                conn.commit()
+                clickMethod(ui.changePasswordButton,"Password changed succesfully!")
+            else:
+                clickMethod(ui.changePasswordButton,"Invalid question or answer")
+    else:
+        if not EncryptLibrary.validPassword(newPassword):
+            clickMethod(ui.changePasswordButton,"Invalid password")
+        elif newPassword!=confirmedPassword:
+            clickMethod(ui.changePasswordButton,"Passwords do not match")
+        else:
+            c.execute(
+                    "UPDATE user_info SET password=? WHERE username=?",(EncryptLibrary.hashPassword(newPassword),username))
+            conn.commit()
+            clickMethod(ui.changePasswordButton,"Password changed succesfully!")
+            
+        

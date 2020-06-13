@@ -29,7 +29,7 @@ def verifyPassword(storedPassword, providedPassword):
 def validPassword(password):
     # between 6-20 characters,at least one letter,one number,one special symbol
     pattern = re.compile(
-        "^(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,20}$")
+        "^(?=.*[a-z])(?=.*\d)(?=.*[@$#!%*?&])[A-Za-z\d@$#!%*?&]{6,20}$")
     if re.search(pattern, password):
         return True
     else:
