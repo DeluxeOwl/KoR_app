@@ -37,10 +37,6 @@ def loginButtonClicked(ui, switchBack, conn=None, c=None):
         print("Invalid username or password")
 
 
-def forgotpasswordButtonClicked(ui,switchBack, conn=None, c=None):
-    switchBack(Ui_ForgotPasswordWindow)
-
-
 def registerButtonClicked(ui, switchBack, dataLocation, conn=None, c=None):
 
     username = ui.usernameRegInput.text()
@@ -101,3 +97,24 @@ def pushButtonOpenFilesClicked(ui, currentUser, conn=None, c=None):
 
 def clickMethod(self, msg):
     QMessageBox.about(self, "Warning", msg)
+    
+def resetPasswordButtonClicked(ui,conn=None,c=None):
+    """
+    verify that all fields are valid
+    
+    Take the username
+    verify that it exists in the database
+    check that the password matches
+    check the security question and answer
+    hash the password and update the database"""
+    
+    username = ui.usernameLineEdit.text()
+    newPassword = ui.newPasswordLineEdit.text()
+    confirmedPassword = ui.confirmLineEdit.text()
+    
+    secQuestion=ui.questionComboBox.currentText()
+    
+    answer=ui.answerLineEdit.text()
+    
+    print(username,newPassword,confirmedPassword,secQuestion,answer)
+    

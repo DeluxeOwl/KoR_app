@@ -4,6 +4,7 @@ from PyQt5 import QtWidgets
 from UserInterface.mainPage import Ui_MainWindow
 from UserInterface.registerPage import Ui_RegisterWindow
 from UserInterface.dashboard import Ui_LoggedWindow
+from UserInterface.forgotPasswordPage import Ui_ForgotPasswordWindow
 from BackEndActions.ButtonActions import *
 from BackEndActions.EncryptLibrary import encryptFiles
 
@@ -65,7 +66,15 @@ def switchToWindow(windowToSwitchTo, currentUser=None):
             lambda: switchToWindow(Ui_RegisterWindow))
 
         ui.forgotpasswordButton.clicked.connect(
-            lambda: forgotpasswordButtonClicked(ui,switchToWindow, conn, cursor))
+            lambda: switchToWindow(Ui_ForgotPasswordWindow))
+        
+    # Ui_ForgotPasswordWindow buttons
+    if type(ui) is Ui_ForgotPasswordWindow:
+        ui.cancelButton.clicked.connect(
+            lambda: switchToWindow(Ui_MainWindow))
+        ui.resetPasswordButton.clicked.connect(
+            lambda:resetPasswordButtonClicked(ui,conn,cursor)
+        )
 
 
 if __name__ == "__main__":
@@ -120,7 +129,7 @@ if __name__ == "__main__":
             lambda: switchToWindow(Ui_RegisterWindow))
 
         ui.forgotpasswordButton.clicked.connect(
-            lambda: forgotpasswordButtonClicked(ui,switchToWindow, conn, cursor))
+            lambda: switchToWindow(Ui_ForgotPasswordWindow))
 
         """Add more MainWindow related buttons above and in switchToWindow"""
 
