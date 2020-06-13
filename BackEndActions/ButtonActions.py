@@ -116,5 +116,35 @@ def resetPasswordButtonClicked(ui,conn=None,c=None):
     
     answer=ui.answerLineEdit.text()
     
-    print(username,newPassword,confirmedPassword,secQuestion,answer)
-    
+    if not EncryptLibrary.validUsername(username) or not EncryptLibrary.validPassword(newPassword):
+        clickMethod(ui.resetPasswordButton,"Invalid username or password")
+    elif newPassword!=confirmedPassword:
+        clickMethod(ui.resetPasswordButton,"Passwords do not match")
+    else:
+        # select the username,check if it exists,then check if the secQ matches
+        c.execute(
+            "SELECT secQuestion,secAnswer FROM user_info WHERE username=?",(username,))
+        
+        
+
+        try:
+            response = c.fetchall()[0]
+            secQuestionDB = response[0]
+            secAnswerDB = response[1]
+        except:
+            response=None
+            clickMethod(ui.resetPasswordButton,"Invalid username")
+            return
+
+            
+        if secQuestionDB!=secQuestion:
+            clickMethod(ui.resetPasswordButton,"Invalid question or answer")
+        elif EncryptLibrary.verifyPassword(secAnswerDB,answer):
+            c.execute(
+                "UPDATE user_info SET password=? WHERE username=?",(EncryptLibrary.hashPassword(newPassword),username))
+            conn.commit()
+            clickMethod(ui.resetPasswordButton,"Password changed succesfully!")
+        else:
+            clickMethod(ui.resetPasswordButton,"Invalid question or answer")
+            
+        

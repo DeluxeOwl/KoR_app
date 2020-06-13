@@ -15,7 +15,7 @@ class Ui_ForgotPasswordWindow(object):
         ForgotPasswordWindow.setObjectName("ForgotPasswordWindow")
         ForgotPasswordWindow.resize(730, 730)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("../images/app_icon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap("./images/app_icon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         ForgotPasswordWindow.setWindowIcon(icon)
         self.centralwidget = QtWidgets.QWidget(ForgotPasswordWindow)
         self.centralwidget.setObjectName("centralwidget")
