@@ -101,6 +101,10 @@ def switchToWindow(windowToSwitchTo, currentUser=None,lastWindow=None):
         
     # Ui_GroupWindow buttons
     if type(ui) is Ui_GroupWindow:
+        
+        if currentUser!="admin":
+            ui.deleteUserButton.hide()
+        
         ui.usersConn=conn
         ui.usersCursor=cursor
         
@@ -124,6 +128,12 @@ def switchToWindow(windowToSwitchTo, currentUser=None,lastWindow=None):
         )
         ui.removeFromGroupButton.clicked.connect(
             lambda: removeFromGroupButtonClicked(ui,connGroup,cursorGroup,currentUser)
+        )
+        ui.disbandGroupButton.clicked.connect(
+            lambda: disbandGroupButtonClicked(ui,connGroup,cursorGroup,currentUser)
+        )
+        ui.deleteUserButton.clicked.connect(
+            lambda: deleteUserButtonClicked(ui,conn,cursor,connGroup,cursorGroup)
         )
 
 
@@ -165,9 +175,9 @@ if __name__ == "__main__":
         if cursorGroup.fetchone()[0] == 0:
             cursorGroup.execute(
                 ''' CREATE TABLE group_info (groupLeader text,
-                                            groupName text,
-                                            members text,
-                                            UNIQUE(groupName))''')
+                                             groupName text,
+                                             members text,
+                                             UNIQUE(groupName))''')
             connGroup.commit()
 
 

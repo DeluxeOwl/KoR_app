@@ -305,3 +305,59 @@ def removeFromGroupButtonClicked(ui,conn=None,c=None,currentUser=None):
             conn.commit()
 
     ui.displayGroupUsers(conn,c,currentUser) 
+    
+def disbandGroupButtonClicked(ui,conn=None,c=None,currentUser=None):
+    group = ui.groupComboBox.currentText()
+    c.execute("SELECT * FROM group_info WHERE groupName=?",(group,))
+    
+    for values in c.fetchall():
+        groupLeader = values[0]
+        groupName = values[1]
+        members = values[2]
+        
+        if currentUser!=groupLeader:
+            clickMethod(ui.disbandGroupButton,"You're not the leader of this group")
+        else:
+            c.execute("DELETE FROM group_info WHERE groupName=?",(groupName,))
+            conn.commit()
+            
+    ui.displayGroupUsers(conn,c,currentUser)
+
+
+def deleteUserButtonClicked(ui,conn,cursor,connGroup,cursorGroup):
+    user = ui.userComboBox.currentText()
+    
+    if user=="admin":
+        clickMethod(ui.deleteUserButton,"You cannot delete the admin account")
+        return
+    
+    print("Deleting user",user)
+    
+    cursor.execute("SELECT * FROM user_info WHERE username=?",(user,))
+    for first_row in cursor.fetchall():
+        userDirectory=first_row[3]
+        print("Deleting directory",userDirectory)
+        subprocess.run(['rm','-rf', userDirectory], check=True)
+        
+        cursor.execute("DELETE FROM user_info WHERE username=?",(user,))
+        
+        conn.commit()
+    
+    cursorGroup.execute("DELETE FROM group_info WHERE groupLeader=?",(user,))
+    connGroup.commit()
+    
+    cursorGroup.execute("SELECT * FROM group_info")
+    
+    for values in cursorGroup.fetchall():
+        groupName = values[1]
+        members = values[2]
+        
+        members = members.split()
+        if user in members:
+            members.remove(user)
+            members = ' '.join(members)
+            cursorGroup.execute("UPDATE group_info SET members=? WHERE groupName=?",(members,groupName))
+            conn.commit()
+        
+    ui.displayGroupUsers(connGroup,cursorGroup,"admin")
+        
