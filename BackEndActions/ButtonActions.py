@@ -5,8 +5,9 @@ from BackEndActions import EncryptLibrary
 from UserInterface.mainPage import Ui_MainWindow
 from UserInterface.dashboard import Ui_LoggedWindow
 from UserInterface.forgotPasswordPage import Ui_ForgotPasswordWindow
-from PyQt5 import QtCore
+from PyQt5 import QtCore,QtWidgets
 from PyQt5.QtWidgets import QMessageBox
+from UserInterface.dialog import Ui_Dialog
 
 
 def loginButtonClicked(ui, switchBack, conn=None, c=None):
@@ -187,4 +188,52 @@ def changePasswordButtonClicked(ui,conn=None,c=None,currentUser=None):
             conn.commit()
             clickMethod(ui.changePasswordButton,"Password changed succesfully!")
             
+            
+def newGroupButtonClicked(ui,conn=None,c=None,currentUser=None):
+    dialog = QtWidgets.QDialog()
+    dialog.ui = Ui_Dialog()
+    dialog.ui.setupUi(dialog)
+    dialog.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+
+    dialog.ui.changeText("Group name:")
+    dialog.ui.pushButtonCancel.clicked.connect(dialog.done)
+
+    def groupName():
+        name = dialog.ui.getLineEditAnswer()
+        tmp=(currentUser,name,currentUser)
+        try:
+            c.execute(
+                "INSERT INTO group_info VALUES (?,?,?)",tmp
+            )
+            conn.commit()
+            dialog.done(0)
+            ui.displayGroupUsers(conn,c,currentUser)
+        except sqlite3.IntegrityError:
+            clickMethod(ui.newGroupButton,"Name already taken")
+        
+    
+    dialog.ui.pushButtonOK.clicked.connect(groupName)
+
+    dialog.exec_()
+    
+def addToGroupButtonClicked(ui,conn=None,c=None,currentUser=None):
+    group = ui.groupComboBox.currentText()
+    user = ui.userComboBox.currentText()
+    
+    c.execute("SELECT * FROM group_info WHERE groupName=?",(group,))
+    
+    for values in c.fetchall():
+        groupLeader = values[0]
+        groupName = values[1]
+        members = values[2]
+        
+        if user in members.split():
+            clickMethod(ui.addToGroupButton,"User already in group")
+        else:
+            members=members+" "+user
+            c.execute("UPDATE group_info SET members=? WHERE groupName=?",(members,groupName))
+            conn.commit()
+    ui.displayGroupUsers(conn,c,currentUser)
+    
+
         
