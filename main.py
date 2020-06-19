@@ -14,9 +14,11 @@ import sys
 import os
 import sqlite3
 
-# lastWindow is for checking if the last window was a groups window 
+# lastWindow is for checking if the last window was a groups window
 # and if it was,we display the files in UI_LoggedWindow
-def switchToWindow(windowToSwitchTo, currentUser=None,lastWindow=None):
+
+
+def switchToWindow(windowToSwitchTo, currentUser=None, lastWindow=None):
 
     # Get old window sizes
     newWidth = MainWindow.frameSize().width() - 8
@@ -61,10 +63,10 @@ def switchToWindow(windowToSwitchTo, currentUser=None,lastWindow=None):
             lambda: pushButtonOpenFilesClicked(ui, currentUser, conn, cursor)
         )
         ui.pushButtonChangePassword.clicked.connect(
-            lambda:switchToWindow(Ui_ChangePasswordWindow,currentUser)
+            lambda: switchToWindow(Ui_ChangePasswordWindow, currentUser)
         )
         ui.pushButtonGroups.clicked.connect(
-            lambda:switchToWindow(Ui_GroupWindow,currentUser)
+            lambda: switchToWindow(Ui_GroupWindow, currentUser)
         )
 
     # Ui_MainWindow buttons
@@ -77,63 +79,71 @@ def switchToWindow(windowToSwitchTo, currentUser=None,lastWindow=None):
 
         ui.forgotpasswordButton.clicked.connect(
             lambda: switchToWindow(Ui_ForgotPasswordWindow))
-        
+
     # Ui_ForgotPasswordWindow buttons
     if type(ui) is Ui_ForgotPasswordWindow:
         ui.cancelButton.clicked.connect(
             lambda: switchToWindow(Ui_MainWindow))
         ui.resetPasswordButton.clicked.connect(
-            lambda:resetPasswordButtonClicked(ui,conn,cursor)
+            lambda: resetPasswordButtonClicked(ui, conn, cursor)
         )
-        
+
     # Ui_ChangePasswordWindow
     if type(ui) is Ui_ChangePasswordWindow:
         # Hide the security question if the user is an admin
-        if currentUser=='admin':
+        if currentUser == 'admin':
             ui.questionComboBox.hide()
             ui.answerLineEdit.hide()
             ui.label_5.hide()
         ui.cancelButton.clicked.connect(
-            lambda: switchToWindow(Ui_LoggedWindow,currentUser))
+            lambda: switchToWindow(Ui_LoggedWindow, currentUser))
         ui.changePasswordButton.clicked.connect(
-            lambda:changePasswordButtonClicked(ui,conn,cursor,currentUser)
+            lambda: changePasswordButtonClicked(ui, conn, cursor, currentUser)
         )
-        
+
     # Ui_GroupWindow buttons
     if type(ui) is Ui_GroupWindow:
-        
-        if currentUser!="admin":
+
+        if currentUser != "admin":
             ui.deleteUserButton.hide()
-        
-        ui.usersConn=conn
-        ui.usersCursor=cursor
-        
-        ui.displayGroupUsers(connGroup,cursorGroup,currentUser)
-        
+
+        ui.usersConn = conn
+        ui.usersCursor = cursor
+
+        ui.displayGroupUsers(connGroup, cursorGroup, currentUser)
+
         ui.takeMeBackButton.clicked.connect(
-            lambda: switchToWindow(Ui_LoggedWindow,currentUser,Ui_GroupWindow)
+            lambda: switchToWindow(
+                Ui_LoggedWindow, currentUser, Ui_GroupWindow)
         )
         # prompt group name, insert into group database,parameters conn,cursor
         ui.newGroupButton.clicked.connect(
-            lambda: newGroupButtonClicked(ui,connGroup,cursorGroup,currentUser)
+            lambda: newGroupButtonClicked(
+                ui, connGroup, cursorGroup, currentUser)
         )
         ui.addToGroupButton.clicked.connect(
-            lambda: addToGroupButtonClicked(ui,connGroup,cursorGroup,currentUser)
+            lambda: addToGroupButtonClicked(
+                ui, connGroup, cursorGroup, currentUser)
         )
         ui.leaveGroupButton.clicked.connect(
-            lambda: leaveGroupButtonClicked(ui,connGroup,cursorGroup,currentUser)
+            lambda: leaveGroupButtonClicked(
+                ui, connGroup, cursorGroup, currentUser)
         )
         ui.appointLeaderButton.clicked.connect(
-            lambda: appointLeaderButtonClicked(ui,connGroup,cursorGroup,currentUser)
+            lambda: appointLeaderButtonClicked(
+                ui, connGroup, cursorGroup, currentUser)
         )
         ui.removeFromGroupButton.clicked.connect(
-            lambda: removeFromGroupButtonClicked(ui,connGroup,cursorGroup,currentUser)
+            lambda: removeFromGroupButtonClicked(
+                ui, connGroup, cursorGroup, currentUser)
         )
         ui.disbandGroupButton.clicked.connect(
-            lambda: disbandGroupButtonClicked(ui,connGroup,cursorGroup,currentUser)
+            lambda: disbandGroupButtonClicked(
+                ui, connGroup, cursorGroup, currentUser)
         )
         ui.deleteUserButton.clicked.connect(
-            lambda: deleteUserButtonClicked(ui,conn,cursor,connGroup,cursorGroup)
+            lambda: deleteUserButtonClicked(
+                ui, conn, cursor, connGroup, cursorGroup)
         )
 
 
@@ -150,12 +160,12 @@ if __name__ == "__main__":
         database_path = 'users.db'
         conn = sqlite3.connect(database_path)
         cursor = conn.cursor()
-        
+
         """start group database"""
-        group_database_path='groups.db'
-        connGroup=sqlite3.connect(group_database_path)
+        group_database_path = 'groups.db'
+        connGroup = sqlite3.connect(group_database_path)
         cursorGroup = connGroup.cursor()
-        
+
         # Check if table exists,if not,create it
         cursor.execute(
             ''' SELECT count(name) FROM sqlite_master WHERE type='table' AND name='user_info' ''')
@@ -169,7 +179,7 @@ if __name__ == "__main__":
                                             secAnswer text,
                                             UNIQUE(username))''')
             conn.commit()
-            
+
         cursorGroup.execute(
             ''' SELECT count(name) FROM sqlite_master WHERE type='table' AND name='group_info' ''')
         if cursorGroup.fetchone()[0] == 0:
@@ -179,7 +189,6 @@ if __name__ == "__main__":
                                              members text,
                                              UNIQUE(groupName))''')
             connGroup.commit()
-
 
         # Default admin account
         cursor.execute(
@@ -220,4 +229,3 @@ if __name__ == "__main__":
         print("Databases closed succesfully")
         print("Encrypting files ...")
         EncryptLibrary.encryptFiles(dataLocation)
-        

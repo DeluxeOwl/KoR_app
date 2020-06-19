@@ -12,11 +12,11 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 
 class Ui_GroupWindow(object):
-    
+
     def __init__(self):
-        self.usersConn=None
-        self.usersCursor=None
-    
+        self.usersConn = None
+        self.usersCursor = None
+
     def setupUi(self, GroupWindow):
         GroupWindow.setObjectName("GroupWindow")
         GroupWindow.resize(730, 730)
@@ -117,50 +117,46 @@ class Ui_GroupWindow(object):
         self.deleteUserButton.setText(_translate("GroupWindow", "Delete user"))
         self.takeMeBackButton.setText(
             _translate("GroupWindow", "Take me back"))
-    
-    def displayGroupUsers(self,conn=None,c=None,currentUser=None):
+
+    def displayGroupUsers(self, conn=None, c=None, currentUser=None):
         # selectez groupName si members
         # daca userul meu face parte din members
         # afisez numele grupului
         self.groupTree.clear()
         self.groupComboBox.clear()
         self.userComboBox.clear()
-        
+
         c.execute("SELECT groupName,members,groupLeader from group_info")
-        rows=c.fetchall()
-        
+        rows = c.fetchall()
+
         self.usersCursor.execute("SELECT username from user_info")
-        rowsUser=self.usersCursor.fetchall()
-        
-        uniqueMembers=[]
+        rowsUser = self.usersCursor.fetchall()
+
+        uniqueMembers = []
         for row in rowsUser:
-            member=row[0]
+            member = row[0]
             uniqueMembers.append(member)
-        
-        uniqueMembers=set(uniqueMembers)
+
+        uniqueMembers = set(uniqueMembers)
         for member in uniqueMembers:
             self.userComboBox.addItem(member)
-            
 
         for row in rows:
-            groupName=row[0]
-            members=row[1]
-            groupLeader=row[2]
-            
+            groupName = row[0]
+            members = row[1]
+            groupLeader = row[2]
+
             self.groupComboBox.addItem(groupName)
-            
+
             tmpGroup = QtWidgets.QTreeWidgetItem([groupName])
             self.groupTree.addTopLevelItem(tmpGroup)
-            
+
             for member in members.split():
-                if member==groupLeader:
+                if member == groupLeader:
                     tmpChild = QtWidgets.QTreeWidgetItem(["*"+member])
                     tmpGroup.addChild(tmpChild)
                 else:
                     tmpChild = QtWidgets.QTreeWidgetItem([member])
                     tmpGroup.addChild(tmpChild)
-                
-            
-        self.groupTree.expandToDepth(0)
-        
 
+        self.groupTree.expandToDepth(0)

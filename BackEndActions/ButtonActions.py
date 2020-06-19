@@ -5,7 +5,7 @@ from BackEndActions import EncryptLibrary
 from UserInterface.mainPage import Ui_MainWindow
 from UserInterface.dashboard import Ui_LoggedWindow
 from UserInterface.forgotPasswordPage import Ui_ForgotPasswordWindow
-from PyQt5 import QtCore,QtWidgets
+from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtWidgets import QMessageBox
 from UserInterface.dialog import Ui_Dialog
 
@@ -98,98 +98,103 @@ def pushButtonOpenFilesClicked(ui, currentUser, conn=None, c=None):
 
 def clickMethod(self, msg):
     QMessageBox.about(self, "Warning", msg)
-    
-def resetPasswordButtonClicked(ui,conn=None,c=None):
+
+
+def resetPasswordButtonClicked(ui, conn=None, c=None):
 
     username = ui.usernameLineEdit.text()
     newPassword = ui.newPasswordLineEdit.text()
     confirmedPassword = ui.confirmLineEdit.text()
-    
-    secQuestion=ui.questionComboBox.currentText()
-    
-    answer=ui.answerLineEdit.text()
-    
+
+    secQuestion = ui.questionComboBox.currentText()
+
+    answer = ui.answerLineEdit.text()
+
     if not EncryptLibrary.validUsername(username) or not EncryptLibrary.validPassword(newPassword):
-        clickMethod(ui.resetPasswordButton,"Invalid username or password")
-    elif newPassword!=confirmedPassword:
-        clickMethod(ui.resetPasswordButton,"Passwords do not match")
+        clickMethod(ui.resetPasswordButton, "Invalid username or password")
+    elif newPassword != confirmedPassword:
+        clickMethod(ui.resetPasswordButton, "Passwords do not match")
     else:
         # select the username,check if it exists,then check if the secQ matches
         c.execute(
-            "SELECT secQuestion,secAnswer FROM user_info WHERE username=?",(username,))
-        
+            "SELECT secQuestion,secAnswer FROM user_info WHERE username=?", (username,))
+
         try:
             response = c.fetchall()[0]
             secQuestionDB = response[0]
             secAnswerDB = response[1]
         except:
-            response=None
-            clickMethod(ui.resetPasswordButton,"Invalid username")
+            response = None
+            clickMethod(ui.resetPasswordButton, "Invalid username")
             return
 
-            
-        if secQuestionDB!=secQuestion:
-            clickMethod(ui.resetPasswordButton,"Invalid question or answer")
-        elif EncryptLibrary.verifyPassword(secAnswerDB,answer):
+        if secQuestionDB != secQuestion:
+            clickMethod(ui.resetPasswordButton, "Invalid question or answer")
+        elif EncryptLibrary.verifyPassword(secAnswerDB, answer):
             c.execute(
-                "UPDATE user_info SET password=? WHERE username=?",(EncryptLibrary.hashPassword(newPassword),username))
+                "UPDATE user_info SET password=? WHERE username=?", (EncryptLibrary.hashPassword(newPassword), username))
             conn.commit()
-            clickMethod(ui.resetPasswordButton,"Password changed succesfully!")
+            clickMethod(ui.resetPasswordButton,
+                        "Password changed succesfully!")
         else:
-            clickMethod(ui.resetPasswordButton,"Invalid question or answer")
-            
-def changePasswordButtonClicked(ui,conn=None,c=None,currentUser=None):
+            clickMethod(ui.resetPasswordButton, "Invalid question or answer")
+
+
+def changePasswordButtonClicked(ui, conn=None, c=None, currentUser=None):
 
     username = currentUser
     newPassword = ui.newPasswordLineEdit.text()
     confirmedPassword = ui.confirmLineEdit.text()
-    
-    if currentUser!='admin':
-        secQuestion=ui.questionComboBox.currentText()
-        
-        answer=ui.answerLineEdit.text()
-        
+
+    if currentUser != 'admin':
+        secQuestion = ui.questionComboBox.currentText()
+
+        answer = ui.answerLineEdit.text()
+
         if not EncryptLibrary.validPassword(newPassword):
-            clickMethod(ui.changePasswordButton,"Invalid password")
-        elif newPassword!=confirmedPassword:
-            clickMethod(ui.changePasswordButton,"Passwords do not match")
+            clickMethod(ui.changePasswordButton, "Invalid password")
+        elif newPassword != confirmedPassword:
+            clickMethod(ui.changePasswordButton, "Passwords do not match")
         else:
             # select the username,check if it exists,then check if the secQ matches
             c.execute(
-                "SELECT secQuestion,secAnswer FROM user_info WHERE username=?",(username,))
-            
+                "SELECT secQuestion,secAnswer FROM user_info WHERE username=?", (username,))
+
             try:
                 response = c.fetchall()[0]
                 secQuestionDB = response[0]
                 secAnswerDB = response[1]
             except:
-                response=None
-                clickMethod(ui.changePasswordButton,"CRITICAL ERROR")
+                response = None
+                clickMethod(ui.changePasswordButton, "CRITICAL ERROR")
                 return
 
-                
-            if secQuestionDB!=secQuestion:
-                clickMethod(ui.changePasswordButton,"Invalid question or answer")
-            elif EncryptLibrary.verifyPassword(secAnswerDB,answer):
+            if secQuestionDB != secQuestion:
+                clickMethod(ui.changePasswordButton,
+                            "Invalid question or answer")
+            elif EncryptLibrary.verifyPassword(secAnswerDB, answer):
                 c.execute(
-                    "UPDATE user_info SET password=? WHERE username=?",(EncryptLibrary.hashPassword(newPassword),username))
+                    "UPDATE user_info SET password=? WHERE username=?", (EncryptLibrary.hashPassword(newPassword), username))
                 conn.commit()
-                clickMethod(ui.changePasswordButton,"Password changed succesfully!")
+                clickMethod(ui.changePasswordButton,
+                            "Password changed succesfully!")
             else:
-                clickMethod(ui.changePasswordButton,"Invalid question or answer")
+                clickMethod(ui.changePasswordButton,
+                            "Invalid question or answer")
     else:
         if not EncryptLibrary.validPassword(newPassword):
-            clickMethod(ui.changePasswordButton,"Invalid password")
-        elif newPassword!=confirmedPassword:
-            clickMethod(ui.changePasswordButton,"Passwords do not match")
+            clickMethod(ui.changePasswordButton, "Invalid password")
+        elif newPassword != confirmedPassword:
+            clickMethod(ui.changePasswordButton, "Passwords do not match")
         else:
             c.execute(
-                    "UPDATE user_info SET password=? WHERE username=?",(EncryptLibrary.hashPassword(newPassword),username))
+                "UPDATE user_info SET password=? WHERE username=?", (EncryptLibrary.hashPassword(newPassword), username))
             conn.commit()
-            clickMethod(ui.changePasswordButton,"Password changed succesfully!")
-            
-            
-def newGroupButtonClicked(ui,conn=None,c=None,currentUser=None):
+            clickMethod(ui.changePasswordButton,
+                        "Password changed succesfully!")
+
+
+def newGroupButtonClicked(ui, conn=None, c=None, currentUser=None):
     dialog = QtWidgets.QDialog()
     dialog.ui = Ui_Dialog()
     dialog.ui.setupUi(dialog)
@@ -200,164 +205,180 @@ def newGroupButtonClicked(ui,conn=None,c=None,currentUser=None):
 
     def groupName():
         name = dialog.ui.getLineEditAnswer()
-        tmp=(currentUser,name,currentUser)
+        tmp = (currentUser, name, currentUser)
         try:
             c.execute(
-                "INSERT INTO group_info VALUES (?,?,?)",tmp
+                "INSERT INTO group_info VALUES (?,?,?)", tmp
             )
             conn.commit()
             dialog.done(0)
-            ui.displayGroupUsers(conn,c,currentUser)
+            ui.displayGroupUsers(conn, c, currentUser)
         except sqlite3.IntegrityError:
-            clickMethod(ui.newGroupButton,"Name already taken")
-        
-    
+            clickMethod(ui.newGroupButton, "Name already taken")
+
     dialog.ui.pushButtonOK.clicked.connect(groupName)
 
     dialog.exec_()
-    
-def addToGroupButtonClicked(ui,conn=None,c=None,currentUser=None):
+
+
+def addToGroupButtonClicked(ui, conn=None, c=None, currentUser=None):
     group = ui.groupComboBox.currentText()
     user = ui.userComboBox.currentText()
-    
-    c.execute("SELECT * FROM group_info WHERE groupName=?",(group,))
-    
+
+    c.execute("SELECT * FROM group_info WHERE groupName=?", (group,))
+
     for values in c.fetchall():
         groupLeader = values[0]
         groupName = values[1]
         members = values[2]
-        
-        if groupLeader !=currentUser:
-            clickMethod(ui.addToGroupButton,"You don't have permission to do that")
+
+        if groupLeader != currentUser:
+            clickMethod(ui.addToGroupButton,
+                        "You don't have permission to do that")
         elif user in members.split():
-            clickMethod(ui.addToGroupButton,"User already in group")
+            clickMethod(ui.addToGroupButton, "User already in group")
         else:
-            members=members+" "+user
-            c.execute("UPDATE group_info SET members=? WHERE groupName=?",(members,groupName))
+            members = members+" "+user
+            c.execute(
+                "UPDATE group_info SET members=? WHERE groupName=?", (members, groupName))
             conn.commit()
-    ui.displayGroupUsers(conn,c,currentUser)
-    
-def leaveGroupButtonClicked(ui,conn=None,c=None,currentUser=None):
+    ui.displayGroupUsers(conn, c, currentUser)
+
+
+def leaveGroupButtonClicked(ui, conn=None, c=None, currentUser=None):
     group = ui.groupComboBox.currentText()
-    c.execute("SELECT * FROM group_info WHERE groupName=?",(group,))
-    
+    c.execute("SELECT * FROM group_info WHERE groupName=?", (group,))
+
     for values in c.fetchall():
         groupLeader = values[0]
         groupName = values[1]
         members = values[2]
-        
+
         if currentUser not in members.split():
-            clickMethod(ui.leaveGroupButton,"You're not part of that group")
-        elif groupLeader==currentUser:
-            clickMethod(ui.leaveGroupButton,"You must appoint a new leader before leaving the group")
+            clickMethod(ui.leaveGroupButton, "You're not part of that group")
+        elif groupLeader == currentUser:
+            clickMethod(ui.leaveGroupButton,
+                        "You must appoint a new leader before leaving the group")
         else:
-            members=members.split()
+            members = members.split()
             members.remove(currentUser)
             members = ' '.join(members)
-            c.execute("UPDATE group_info SET members=? WHERE groupName=?",(members,groupName))
+            c.execute(
+                "UPDATE group_info SET members=? WHERE groupName=?", (members, groupName))
             conn.commit()
-        
-    ui.displayGroupUsers(conn,c,currentUser)  
 
-def appointLeaderButtonClicked(ui,conn=None,c=None,currentUser=None):
+    ui.displayGroupUsers(conn, c, currentUser)
+
+
+def appointLeaderButtonClicked(ui, conn=None, c=None, currentUser=None):
     group = ui.groupComboBox.currentText()
     user = ui.userComboBox.currentText()
-    
-    c.execute("SELECT * FROM group_info WHERE groupName=?",(group,))
-    
+
+    c.execute("SELECT * FROM group_info WHERE groupName=?", (group,))
+
     for values in c.fetchall():
         groupLeader = values[0]
         groupName = values[1]
         members = values[2]
-        
-        if currentUser!=groupLeader:
-            clickMethod(ui.appointLeaderButton,"You're not the leader of this group")
+
+        if currentUser != groupLeader:
+            clickMethod(ui.appointLeaderButton,
+                        "You're not the leader of this group")
         elif user not in members.split():
-            clickMethod(ui.appointLeaderButton,"The user is not part of this group")
+            clickMethod(ui.appointLeaderButton,
+                        "The user is not part of this group")
         else:
-            c.execute("UPDATE group_info SET groupLeader=? WHERE groupName=?",(user,groupName))
+            c.execute(
+                "UPDATE group_info SET groupLeader=? WHERE groupName=?", (user, groupName))
             conn.commit()
-    
-    ui.displayGroupUsers(conn,c,currentUser) 
-            
-def removeFromGroupButtonClicked(ui,conn=None,c=None,currentUser=None):
+
+    ui.displayGroupUsers(conn, c, currentUser)
+
+
+def removeFromGroupButtonClicked(ui, conn=None, c=None, currentUser=None):
     group = ui.groupComboBox.currentText()
     user = ui.userComboBox.currentText()
-    
-    c.execute("SELECT * FROM group_info WHERE groupName=?",(group,))
-    
+
+    c.execute("SELECT * FROM group_info WHERE groupName=?", (group,))
+
     for values in c.fetchall():
         groupLeader = values[0]
         groupName = values[1]
         members = values[2]
-        
-        if currentUser!=groupLeader:
-            clickMethod(ui.appointLeaderButton,"You're not the leader of this group")
-        elif user==currentUser:
-            clickMethod(ui.appointLeaderButton,"If you wish to leave your group,appoint a new leader then press the \"Leave group\" button")
+
+        if currentUser != groupLeader:
+            clickMethod(ui.appointLeaderButton,
+                        "You're not the leader of this group")
+        elif user == currentUser:
+            clickMethod(ui.appointLeaderButton,
+                        "If you wish to leave your group,appoint a new leader then press the \"Leave group\" button")
         elif user not in members.split():
-            clickMethod(ui.appointLeaderButton,"The user is not part of this group")
+            clickMethod(ui.appointLeaderButton,
+                        "The user is not part of this group")
         else:
-            members=members.split()
+            members = members.split()
             members.remove(user)
             members = ' '.join(members)
-            c.execute("UPDATE group_info SET members=? WHERE groupName=?",(members,groupName))
+            c.execute(
+                "UPDATE group_info SET members=? WHERE groupName=?", (members, groupName))
             conn.commit()
 
-    ui.displayGroupUsers(conn,c,currentUser) 
-    
-def disbandGroupButtonClicked(ui,conn=None,c=None,currentUser=None):
+    ui.displayGroupUsers(conn, c, currentUser)
+
+
+def disbandGroupButtonClicked(ui, conn=None, c=None, currentUser=None):
     group = ui.groupComboBox.currentText()
-    c.execute("SELECT * FROM group_info WHERE groupName=?",(group,))
-    
+    c.execute("SELECT * FROM group_info WHERE groupName=?", (group,))
+
     for values in c.fetchall():
         groupLeader = values[0]
         groupName = values[1]
         members = values[2]
-        
-        if currentUser!=groupLeader:
-            clickMethod(ui.disbandGroupButton,"You're not the leader of this group")
+
+        if currentUser != groupLeader:
+            clickMethod(ui.disbandGroupButton,
+                        "You're not the leader of this group")
         else:
-            c.execute("DELETE FROM group_info WHERE groupName=?",(groupName,))
+            c.execute("DELETE FROM group_info WHERE groupName=?", (groupName,))
             conn.commit()
-            
-    ui.displayGroupUsers(conn,c,currentUser)
+
+    ui.displayGroupUsers(conn, c, currentUser)
 
 
-def deleteUserButtonClicked(ui,conn,cursor,connGroup,cursorGroup):
+def deleteUserButtonClicked(ui, conn, cursor, connGroup, cursorGroup):
     user = ui.userComboBox.currentText()
-    
-    if user=="admin":
-        clickMethod(ui.deleteUserButton,"You cannot delete the admin account")
+
+    if user == "admin":
+        clickMethod(ui.deleteUserButton, "You cannot delete the admin account")
         return
-    
-    print("Deleting user",user)
-    
-    cursor.execute("SELECT * FROM user_info WHERE username=?",(user,))
+
+    print("Deleting user", user)
+
+    cursor.execute("SELECT * FROM user_info WHERE username=?", (user,))
     for first_row in cursor.fetchall():
-        userDirectory=first_row[3]
-        print("Deleting directory",userDirectory)
-        subprocess.run(['rm','-rf', userDirectory], check=True)
-        
-        cursor.execute("DELETE FROM user_info WHERE username=?",(user,))
-        
+        userDirectory = first_row[3]
+        print("Deleting directory", userDirectory)
+        subprocess.run(['rm', '-rf', userDirectory], check=True)
+
+        cursor.execute("DELETE FROM user_info WHERE username=?", (user,))
+
         conn.commit()
-    
-    cursorGroup.execute("DELETE FROM group_info WHERE groupLeader=?",(user,))
+
+    cursorGroup.execute("DELETE FROM group_info WHERE groupLeader=?", (user,))
     connGroup.commit()
-    
+
     cursorGroup.execute("SELECT * FROM group_info")
-    
+
     for values in cursorGroup.fetchall():
         groupName = values[1]
         members = values[2]
-        
+
         members = members.split()
         if user in members:
             members.remove(user)
             members = ' '.join(members)
-            cursorGroup.execute("UPDATE group_info SET members=? WHERE groupName=?",(members,groupName))
+            cursorGroup.execute(
+                "UPDATE group_info SET members=? WHERE groupName=?", (members, groupName))
             conn.commit()
-        
-    ui.displayGroupUsers(connGroup,cursorGroup,"admin")
-        
+
+    ui.displayGroupUsers(connGroup, cursorGroup, "admin")
