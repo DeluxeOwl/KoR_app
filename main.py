@@ -101,7 +101,11 @@ def switchToWindow(windowToSwitchTo, currentUser=None,lastWindow=None):
         
     # Ui_GroupWindow buttons
     if type(ui) is Ui_GroupWindow:
+        ui.usersConn=conn
+        ui.usersCursor=cursor
+        
         ui.displayGroupUsers(connGroup,cursorGroup,currentUser)
+        
         ui.takeMeBackButton.clicked.connect(
             lambda: switchToWindow(Ui_LoggedWindow,currentUser,Ui_GroupWindow)
         )
@@ -114,6 +118,9 @@ def switchToWindow(windowToSwitchTo, currentUser=None,lastWindow=None):
         )
         ui.leaveGroupButton.clicked.connect(
             lambda: leaveGroupButtonClicked(ui,connGroup,cursorGroup,currentUser)
+        )
+        ui.appointLeaderButton.clicked.connect(
+            lambda: appointLeaderButtonClicked(ui,connGroup,cursorGroup,currentUser)
         )
 
 

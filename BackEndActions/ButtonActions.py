@@ -251,5 +251,27 @@ def leaveGroupButtonClicked(ui,conn=None,c=None,currentUser=None):
         elif groupLeader==currentUser:
             clickMethod(ui.leaveGroupButton,"You must appoint a new leader before leaving the group")
         else:
-            pass
+            members=members.split()
+            members.remove(currentUser)
+            members = ' '.join(members)
+            c.execute("UPDATE group_info SET members=? WHERE groupName=?",(members,groupName))
+            conn.commit()
+        
+    ui.displayGroupUsers(conn,c,currentUser)  
+
+def appointLeaderButtonClicked(ui,conn=None,c=None,currentUser=None):
+    group = ui.groupComboBox.currentText()
+    user = ui.userComboBox.currentText()
+    
+    c.execute("SELECT * FROM group_info WHERE groupName=?",(group,))
+    
+    for values in c.fetchall():
+        groupLeader = values[0]
+        groupName = values[1]
+        members = values[2]
+        
+        if currentUser!=groupLeader:
+            clickMethod(ui.appointLeaderButton,"You're not the leader of this group")
+        elif user not in members.split():
+            clickMethod(ui.appointLeaderButton,"The user is not part of this group")
             

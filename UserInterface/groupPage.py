@@ -12,6 +12,11 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 
 class Ui_GroupWindow(object):
+    
+    def __init__(self):
+        self.usersConn=None
+        self.usersCursor=None
+    
     def setupUi(self, GroupWindow):
         GroupWindow.setObjectName("GroupWindow")
         GroupWindow.resize(730, 730)
@@ -124,11 +129,13 @@ class Ui_GroupWindow(object):
         c.execute("SELECT groupName,members,groupLeader from group_info")
         rows=c.fetchall()
         
+        self.usersCursor.execute("SELECT username from user_info")
+        rowsUser=self.usersCursor.fetchall()
+        
         uniqueMembers=[]
-        for row in rows:
-            members=row[1]
-            for member in members.split():
-                uniqueMembers.append(member)
+        for row in rowsUser:
+            member=row[0]
+            uniqueMembers.append(member)
         
         uniqueMembers=set(uniqueMembers)
         for member in uniqueMembers:
