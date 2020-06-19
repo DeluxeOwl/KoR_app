@@ -227,7 +227,9 @@ def addToGroupButtonClicked(ui,conn=None,c=None,currentUser=None):
         groupName = values[1]
         members = values[2]
         
-        if user in members.split():
+        if groupLeader !=currentUser:
+            clickMethod(ui.addToGroupButton,"You don't have permission to do that")
+        elif user in members.split():
             clickMethod(ui.addToGroupButton,"User already in group")
         else:
             members=members+" "+user
