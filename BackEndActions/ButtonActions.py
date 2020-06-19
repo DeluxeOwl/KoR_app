@@ -237,5 +237,19 @@ def addToGroupButtonClicked(ui,conn=None,c=None,currentUser=None):
             conn.commit()
     ui.displayGroupUsers(conn,c,currentUser)
     
-
+def leaveGroupButtonClicked(ui,conn=None,c=None,currentUser=None):
+    group = ui.groupComboBox.currentText()
+    c.execute("SELECT * FROM group_info WHERE groupName=?",(group,))
+    
+    for values in c.fetchall():
+        groupLeader = values[0]
+        groupName = values[1]
+        members = values[2]
         
+        if currentUser not in members.split():
+            clickMethod(ui.leaveGroupButton,"You're not part of that group")
+        elif groupLeader==currentUser:
+            clickMethod(ui.leaveGroupButton,"You must appoint a new leader before leaving the group")
+        else:
+            pass
+            

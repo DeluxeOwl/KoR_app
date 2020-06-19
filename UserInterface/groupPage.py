@@ -121,7 +121,7 @@ class Ui_GroupWindow(object):
         self.groupComboBox.clear()
         self.userComboBox.clear()
         
-        c.execute("SELECT groupName,members from group_info")
+        c.execute("SELECT groupName,members,groupLeader from group_info")
         rows=c.fetchall()
         
         uniqueMembers=[]
@@ -138,6 +138,7 @@ class Ui_GroupWindow(object):
         for row in rows:
             groupName=row[0]
             members=row[1]
+            groupLeader=row[2]
             
             self.groupComboBox.addItem(groupName)
             
@@ -145,8 +146,12 @@ class Ui_GroupWindow(object):
             self.groupTree.addTopLevelItem(tmpGroup)
             
             for member in members.split():
-                tmpChild = QtWidgets.QTreeWidgetItem([member])
-                tmpGroup.addChild(tmpChild)
+                if member==groupLeader:
+                    tmpChild = QtWidgets.QTreeWidgetItem(["*"+member])
+                    tmpGroup.addChild(tmpChild)
+                else:
+                    tmpChild = QtWidgets.QTreeWidgetItem([member])
+                    tmpGroup.addChild(tmpChild)
                 
             
         self.groupTree.expandToDepth(0)

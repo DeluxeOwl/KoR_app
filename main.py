@@ -112,6 +112,9 @@ def switchToWindow(windowToSwitchTo, currentUser=None,lastWindow=None):
         ui.addToGroupButton.clicked.connect(
             lambda: addToGroupButtonClicked(ui,connGroup,cursorGroup,currentUser)
         )
+        ui.leaveGroupButton.clicked.connect(
+            lambda: leaveGroupButtonClicked(ui,connGroup,cursorGroup,currentUser)
+        )
 
 
 if __name__ == "__main__":
