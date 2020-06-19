@@ -75,7 +75,7 @@ def registerButtonClicked(ui, switchBack, dataLocation, conn=None, c=None):
         conn.commit()
 
 
-def logoutButtonClicked(switchBack, userLoggedOut, conn=None, c=None):
+def logoutButtonClicked(switchBack, userLoggedOut, conn=None, c=None, connGroup=None, cursorGroup=None):
     switchBack(Ui_MainWindow)
     print("Logged out", userLoggedOut)
 
@@ -85,6 +85,14 @@ def logoutButtonClicked(switchBack, userLoggedOut, conn=None, c=None):
 
     # Encrypt when logging out
     EncryptLibrary.encryptFiles(userDirectory)
+
+    cursorGroup.execute("SELECT * FROM group_info")
+    dataLocation = os.environ['HOME'] + "/KorData/"
+    for row in cursorGroup.fetchall():
+        groupName = row[1]
+        members = row[2]
+        if userLoggedOut in members.split():
+            EncryptLibrary.encryptFiles(dataLocation+groupName)
 
 
 def pushButtonOpenFilesClicked(ui, currentUser, conn=None, c=None):
@@ -212,6 +220,11 @@ def newGroupButtonClicked(ui, conn=None, c=None, currentUser=None):
             )
             conn.commit()
             dialog.done(0)
+
+            dataLocation = os.environ['HOME']+"/KorData/"+name
+            os.mkdir(dataLocation)
+            print("Group location succesfully created at",
+                  dataLocation)
             ui.displayGroupUsers(conn, c, currentUser)
         except sqlite3.IntegrityError:
             clickMethod(ui.newGroupButton, "Name already taken")
@@ -351,6 +364,8 @@ def disbandGroupButtonClicked(ui, conn=None, c=None, currentUser=None):
                 return
 
         c.execute("DELETE FROM group_info WHERE groupName=?", (groupName,))
+        dataLocation = os.environ['HOME']+"/KorData/"+groupName
+        subprocess.run(['rm', '-rf', dataLocation], check=True)
         conn.commit()
 
     ui.displayGroupUsers(conn, c, currentUser)
@@ -393,3 +408,21 @@ def deleteUserButtonClicked(ui, conn, cursor, connGroup, cursorGroup):
             conn.commit()
 
     ui.displayGroupUsers(connGroup, cursorGroup, "admin")
+
+
+def openFilesButtonClicked(ui, conn=None, c=None, currentUser=None):
+    group = ui.groupComboBox.currentText()
+    dataLocation = os.environ['HOME']+"/KorData/"+group
+
+    c.execute("SELECT * FROM group_info WHERE groupName=?", (group,))
+
+    for values in c.fetchall():
+        groupLeader = values[0]
+
+        if currentUser != "admin":
+            if currentUser != groupLeader:
+                clickMethod(ui.openFilesButton,
+                            "You don't have permission to do that")
+                return
+        EncryptLibrary.encryptFiles(dataLocation, decrypt=True)
+        subprocess.run(['xdg-open', dataLocation], check=True)

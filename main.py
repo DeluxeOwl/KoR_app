@@ -58,7 +58,7 @@ def switchToWindow(windowToSwitchTo, currentUser=None, lastWindow=None):
                 encryptFiles(dataLocation+"/"+currentUser, decrypt=True)
 
         ui.pushButtonLogout.clicked.connect(
-            lambda: logoutButtonClicked(switchToWindow, currentUser, conn, cursor))
+            lambda: logoutButtonClicked(switchToWindow, currentUser, conn, cursor, connGroup, cursorGroup))
         ui.pushButtonOpenFiles.clicked.connect(
             lambda: pushButtonOpenFilesClicked(ui, currentUser, conn, cursor)
         )
@@ -116,7 +116,6 @@ def switchToWindow(windowToSwitchTo, currentUser=None, lastWindow=None):
             lambda: switchToWindow(
                 Ui_LoggedWindow, currentUser, Ui_GroupWindow)
         )
-        # prompt group name, insert into group database,parameters conn,cursor
         ui.newGroupButton.clicked.connect(
             lambda: newGroupButtonClicked(
                 ui, connGroup, cursorGroup, currentUser)
@@ -144,6 +143,10 @@ def switchToWindow(windowToSwitchTo, currentUser=None, lastWindow=None):
         ui.deleteUserButton.clicked.connect(
             lambda: deleteUserButtonClicked(
                 ui, conn, cursor, connGroup, cursorGroup)
+        )
+        ui.openFilesButton.clicked.connect(
+            lambda: openFilesButtonClicked(
+                ui, connGroup, cursorGroup, currentUser)
         )
 
 
@@ -227,5 +230,5 @@ if __name__ == "__main__":
         conn.close()
         connGroup.close()
         print("Databases closed succesfully")
-        print("Encrypting files ...")
+
         EncryptLibrary.encryptFiles(dataLocation)
