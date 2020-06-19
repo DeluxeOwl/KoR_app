@@ -232,10 +232,13 @@ def addToGroupButtonClicked(ui, conn=None, c=None, currentUser=None):
         groupName = values[1]
         members = values[2]
 
-        if groupLeader != currentUser:
-            clickMethod(ui.addToGroupButton,
-                        "You don't have permission to do that")
-        elif user in members.split():
+        if currentUser != "admin":
+            if groupLeader != currentUser:
+                clickMethod(ui.addToGroupButton,
+                            "You don't have permission to do that")
+                return
+
+        if user in members.split():
             clickMethod(ui.addToGroupButton, "User already in group")
         else:
             members = members+" "+user
@@ -281,10 +284,13 @@ def appointLeaderButtonClicked(ui, conn=None, c=None, currentUser=None):
         groupName = values[1]
         members = values[2]
 
-        if currentUser != groupLeader:
-            clickMethod(ui.appointLeaderButton,
-                        "You're not the leader of this group")
-        elif user not in members.split():
+        if currentUser != "admin":
+            if currentUser != groupLeader:
+                clickMethod(ui.appointLeaderButton,
+                            "You're not the leader of this group")
+                return
+
+        if user not in members.split():
             clickMethod(ui.appointLeaderButton,
                         "The user is not part of this group")
         else:
@@ -306,10 +312,13 @@ def removeFromGroupButtonClicked(ui, conn=None, c=None, currentUser=None):
         groupName = values[1]
         members = values[2]
 
-        if currentUser != groupLeader:
-            clickMethod(ui.appointLeaderButton,
-                        "You're not the leader of this group")
-        elif user == currentUser:
+        if currentUser != "admin":
+            if currentUser != groupLeader:
+                clickMethod(ui.appointLeaderButton,
+                            "You're not the leader of this group")
+                return
+
+        if user == groupLeader:
             clickMethod(ui.appointLeaderButton,
                         "If you wish to leave your group,appoint a new leader then press the \"Leave group\" button")
         elif user not in members.split():
@@ -335,12 +344,14 @@ def disbandGroupButtonClicked(ui, conn=None, c=None, currentUser=None):
         groupName = values[1]
         members = values[2]
 
-        if currentUser != groupLeader:
-            clickMethod(ui.disbandGroupButton,
-                        "You're not the leader of this group")
-        else:
-            c.execute("DELETE FROM group_info WHERE groupName=?", (groupName,))
-            conn.commit()
+        if currentUser != "admin":
+            if currentUser != groupLeader:
+                clickMethod(ui.disbandGroupButton,
+                            "You're not the leader of this group")
+                return
+
+        c.execute("DELETE FROM group_info WHERE groupName=?", (groupName,))
+        conn.commit()
 
     ui.displayGroupUsers(conn, c, currentUser)
 
