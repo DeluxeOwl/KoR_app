@@ -210,7 +210,7 @@ def checkForGuests(conn, cursor, connGroup, cursorGroup):
 if __name__ == "__main__":
 
     try:
-        dataLocation = os.environ['HOME']+"/KorData"
+        dataLocation = os.environ['HOME']+"/.KorData"
         os.mkdir(dataLocation)
         print("Data location succesfully created at",
               dataLocation)

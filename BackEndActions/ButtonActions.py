@@ -94,7 +94,7 @@ def logoutButtonClicked(switchBack, userLoggedOut, conn=None, c=None, connGroup=
     EncryptLibrary.encryptFiles(userDirectory)
 
     cursorGroup.execute("SELECT * FROM group_info")
-    dataLocation = os.environ['HOME'] + "/KorData/"
+    dataLocation = os.environ['HOME'] + "/.KorData/"
     for row in cursorGroup.fetchall():
         groupName = row[1]
         members = row[2]
@@ -228,7 +228,7 @@ def newGroupButtonClicked(ui, conn=None, c=None, currentUser=None):
             conn.commit()
             dialog.done(0)
 
-            dataLocation = os.environ['HOME']+"/KorData/"+name
+            dataLocation = os.environ['HOME']+"/.KorData/"+name
             os.mkdir(dataLocation)
             print("Group location succesfully created at",
                   dataLocation)
@@ -371,7 +371,7 @@ def disbandGroupButtonClicked(ui, conn=None, c=None, currentUser=None):
                 return
 
         c.execute("DELETE FROM group_info WHERE groupName=?", (groupName,))
-        dataLocation = os.environ['HOME']+"/KorData/"+groupName
+        dataLocation = os.environ['HOME']+"/.KorData/"+groupName
         subprocess.run(['rm', '-rf', dataLocation], check=True)
         conn.commit()
 
@@ -419,7 +419,7 @@ def deleteUserButtonClicked(ui, conn, cursor, connGroup, cursorGroup):
 
 def openFilesButtonClicked(ui, conn=None, c=None, currentUser=None):
     group = ui.groupComboBox.currentText()
-    dataLocation = os.environ['HOME']+"/KorData/"+group
+    dataLocation = os.environ['HOME']+"/.KorData/"+group
 
     c.execute("SELECT * FROM group_info WHERE groupName=?", (group,))
 

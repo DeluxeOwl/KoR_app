@@ -24,7 +24,7 @@ class TestEncryptLibraryMethods(unittest.TestCase):
 
 class TestDirectoryLocation(unittest.TestCase):
     def test_directory_location(self):
-        dataLocation = os.environ['HOME']+"/KorData"
+        dataLocation = os.environ['HOME']+"/.KorData"
         self.assertTrue(os.path.exists(dataLocation))
 
 

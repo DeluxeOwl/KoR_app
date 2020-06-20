@@ -201,10 +201,10 @@ class Ui_LoggedWindow(object):
                 # treat admin case
                 if self.labelUsername.text() != "admin":
                     filePathIfNoFiles = os.environ['HOME']+"/" + \
-                        "KorData"+"/" + self.labelUsername.text()+"/"+filename
+                        ".KorData"+"/" + self.labelUsername.text()+"/"+filename
                 else:
                     filePathIfNoFiles = os.environ['HOME']+"/" + \
-                        "KorData"+"/" + filename
+                        ".KorData"+"/" + filename
                 subprocess.run(['touch', filePathIfNoFiles], check=True)
                 dialog.done(0)
             elif os.path.isdir(file_path):
