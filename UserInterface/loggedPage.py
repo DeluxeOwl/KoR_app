@@ -4,14 +4,15 @@ from UserInterface.dialog import Ui_Dialog
 
 import subprocess
 import os
-
+import sys
 
 class Ui_LoggedWindow(object):
     def setupUi(self, LoggedWindow):
         LoggedWindow.setObjectName("LoggedWindow")
         LoggedWindow.resize(730, 730)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("./images/app_icon.png"),
+        absolute_path=sys.path[0]
+        icon.addPixmap(QtGui.QPixmap(absolute_path+"/images/app_icon.png"),
                        QtGui.QIcon.Normal, QtGui.QIcon.Off)
         LoggedWindow.setWindowIcon(icon)
         self.centralwidget = QtWidgets.QWidget(LoggedWindow)

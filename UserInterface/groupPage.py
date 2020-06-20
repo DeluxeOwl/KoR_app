@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-
+import sys
 
 class Ui_GroupWindow(object):
 
@@ -13,7 +13,8 @@ class Ui_GroupWindow(object):
         GroupWindow.resize(730, 730)
 
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("../KorApp/images/app_icon.png"),
+        absolute_path=sys.path[0]
+        icon.addPixmap(QtGui.QPixmap(absolute_path+"/images/app_icon.png"),
                        QtGui.QIcon.Normal, QtGui.QIcon.Off)
         GroupWindow.setWindowIcon(icon)
 
