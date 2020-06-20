@@ -3,9 +3,11 @@
 **requires python 3.8 and pip3**  
 Can be installed with ``sudo apt install python3-pip``
 
-Build using ``python3 setup.py develop ``  
+Build using ``sudo python3 setup.py develop ``  
 Execute using ``python3 main.py`` in your directory  
-Or create a symlink `` ln -s path_to_main_py your_location_of_choice``  
+Or create a symlink `` ln -s path_to_main_py your_location_of_choice``   
+Run unit tests using ``python3 unittesting.py``  
+
 
 The default admin credentials are ``admin:admin1!``,it is strongly suggested you change your admin password.  
 
