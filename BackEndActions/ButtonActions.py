@@ -1,13 +1,16 @@
+from PyQt5 import QtCore, QtWidgets
+from PyQt5.QtWidgets import QMessageBox
+
+
+from BackEndActions import EncryptLibrary
+from UserInterface.mainPage import Ui_MainWindow
+from UserInterface.loggedPage import Ui_LoggedWindow
+from UserInterface.forgotPasswordPage import Ui_ForgotPasswordWindow
+from UserInterface.dialog import Ui_Dialog
+
 import sqlite3
 import os
 import subprocess
-from BackEndActions import EncryptLibrary
-from UserInterface.mainPage import Ui_MainWindow
-from UserInterface.dashboard import Ui_LoggedWindow
-from UserInterface.forgotPasswordPage import Ui_ForgotPasswordWindow
-from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtWidgets import QMessageBox
-from UserInterface.dialog import Ui_Dialog
 
 
 def loginButtonClicked(ui, switchBack, conn=None, c=None):

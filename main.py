@@ -3,7 +3,7 @@ from PyQt5 import QtWidgets
 
 from UserInterface.mainPage import Ui_MainWindow
 from UserInterface.registerPage import Ui_RegisterWindow
-from UserInterface.dashboard import Ui_LoggedWindow
+from UserInterface.loggedPage import Ui_LoggedWindow
 from UserInterface.forgotPasswordPage import Ui_ForgotPasswordWindow
 from UserInterface.changePassword import Ui_ChangePasswordWindow
 from UserInterface.groupPage import Ui_GroupWindow
@@ -15,13 +15,15 @@ import os
 import sqlite3
 import subprocess
 
-# lastWindow is for checking if the last window was a groups window
-# and if it was,we display the files in UI_LoggedWindow
-
 
 def switchToWindow(windowToSwitchTo, currentUser=None, lastWindow=None):
+    '''
+    Switches to the window and acts as a controller for its buttons.
+    Takes 2 optional arguments,the current user and the last window.
+    Last window is used to get back from the groups window 
+    '''
 
-    # Get old window sizes
+    # Get old window sizes,magic offset numbers
     newWidth = MainWindow.frameSize().width() - 8
     newHeight = MainWindow.frameSize().height() - 33
 
@@ -33,19 +35,26 @@ def switchToWindow(windowToSwitchTo, currentUser=None, lastWindow=None):
     # Adjust the size in case the user stretched the window
     MainWindow.resize(newWidth, newHeight)
 
+    # Get the current UI
+    currentUI = type(ui)
+
+    '''
+    Below are the controls for different windows
+    We use lambdas to call the functions,because we can't connect with parameters
+    '''
+
     # Ui_RegisterWindow buttons
-    if type(ui) is Ui_RegisterWindow:
+    if currentUI is Ui_RegisterWindow:
         ui.cancelRegButton.clicked.connect(
             lambda: switchToWindow(Ui_MainWindow))
         ui.signUpRegButton.clicked.connect(
             lambda: registerButtonClicked(ui, switchToWindow, dataLocation, conn, cursor))
 
     # Ui_LoggedWindow buttons
-    if type(ui) is Ui_LoggedWindow:
+    if currentUI is Ui_LoggedWindow:
         ui.labelUsername.setText(currentUser)
 
         # We set the user's directory
-        # TODO : change encrypt password for everyone
         if currentUser == "admin":
             ui.setDirectory(dataLocation)
             if lastWindow is None:
@@ -71,7 +80,7 @@ def switchToWindow(windowToSwitchTo, currentUser=None, lastWindow=None):
         )
 
     # Ui_MainWindow buttons
-    if type(ui) is Ui_MainWindow:
+    if currentUI is Ui_MainWindow:
         ui.loginButton.clicked.connect(
             lambda: loginButtonClicked(ui, switchToWindow, conn, cursor))
 
@@ -82,7 +91,7 @@ def switchToWindow(windowToSwitchTo, currentUser=None, lastWindow=None):
             lambda: switchToWindow(Ui_ForgotPasswordWindow))
 
     # Ui_ForgotPasswordWindow buttons
-    if type(ui) is Ui_ForgotPasswordWindow:
+    if currentUI is Ui_ForgotPasswordWindow:
         ui.cancelButton.clicked.connect(
             lambda: switchToWindow(Ui_MainWindow))
         ui.resetPasswordButton.clicked.connect(
@@ -90,7 +99,7 @@ def switchToWindow(windowToSwitchTo, currentUser=None, lastWindow=None):
         )
 
     # Ui_ChangePasswordWindow
-    if type(ui) is Ui_ChangePasswordWindow:
+    if currentUI is Ui_ChangePasswordWindow:
         # Hide the security question if the user is an admin
         if currentUser == 'admin':
             ui.questionComboBox.hide()
@@ -103,7 +112,7 @@ def switchToWindow(windowToSwitchTo, currentUser=None, lastWindow=None):
         )
 
     # Ui_GroupWindow buttons
-    if type(ui) is Ui_GroupWindow:
+    if currentUI is Ui_GroupWindow:
 
         if currentUser != "admin":
             ui.deleteUserButton.hide()
@@ -156,6 +165,7 @@ def checkForGuests(conn, cursor, connGroup, cursorGroup):
     # time in hours
     maximumTime = 8
 
+    # Get all the guests and the time since registration
     cursor.execute(
         "SELECT username,CAST((julianday(DATETIME(\"now\")) - julianday(dateCreated))*24 AS real) AS TimeOffInHours FROM user_info WHERE role=\"Guest\"")
     for row in cursor.fetchall():
@@ -207,17 +217,17 @@ if __name__ == "__main__":
     except FileExistsError:
         print("Cannot create KorData, directory already exists.")
     try:
-        """start user database"""
+        '''Start the user database connection'''
         database_path = 'users.db'
         conn = sqlite3.connect(database_path)
         cursor = conn.cursor()
 
-        """start group database"""
+        '''Start the group database connection'''
         group_database_path = 'groups.db'
         connGroup = sqlite3.connect(group_database_path)
         cursorGroup = connGroup.cursor()
 
-        # Check if table exists,if not,create it
+        # Check if user_info table exists,if not,create it
         cursor.execute(
             ''' SELECT count(name) FROM sqlite_master WHERE type='table' AND name='user_info' ''')
         if cursor.fetchone()[0] == 0:
@@ -232,6 +242,7 @@ if __name__ == "__main__":
                                             UNIQUE(username))''')
             conn.commit()
 
+        # Check if group_info table exists,if not,create it
         cursorGroup.execute(
             ''' SELECT count(name) FROM sqlite_master WHERE type='table' AND name='group_info' ''')
         if cursorGroup.fetchone()[0] == 0:
@@ -242,7 +253,7 @@ if __name__ == "__main__":
                                              UNIQUE(groupName))''')
             connGroup.commit()
 
-        # Default admin account
+        # Insert the default admin:admin1! account,password should be changed later
         cursor.execute(
             ''' SELECT COUNT(*) FROM user_info WHERE username='admin' ''')
         if cursor.fetchone()[0] == 0:
@@ -250,37 +261,25 @@ if __name__ == "__main__":
                 "INSERT INTO user_info VALUES (?,?,?,?,?,?,DATETIME(\"now\"))", ('admin', EncryptLibrary.hashPassword('admin1!'), 'Admin', dataLocation, "", "",))
             conn.commit()
 
-        """--------------------"""
         # Check for guest accounts that are overdue and delete them
         checkForGuests(conn, cursor, connGroup, cursorGroup)
         app = QtWidgets.QApplication(sys.argv)
 
-        """ This needs to be in main only for the first page """
+        '''We display the main page'''
         MainWindow = QtWidgets.QMainWindow()
 
-        ui = Ui_MainWindow()
-        ui.setupUi(MainWindow)
-
-        ui.loginButton.clicked.connect(
-            lambda: loginButtonClicked(ui, switchToWindow, conn, cursor))
-
-        ui.registerButton.clicked.connect(
-            lambda: switchToWindow(Ui_RegisterWindow))
-
-        ui.forgotpasswordButton.clicked.connect(
-            lambda: switchToWindow(Ui_ForgotPasswordWindow))
-
-        """Add more MainWindow related buttons above and in switchToWindow"""
-
-        MainWindow.show()
+        switchToWindow(Ui_MainWindow)
 
         sys.exit(app.exec_())
     finally:
         print("Closing databases ...")
         # Check for guest accounts that are overdue and delete on exit
         checkForGuests(conn, cursor, connGroup, cursorGroup)
+
+        # Close the database connections
         conn.close()
         connGroup.close()
         print("Databases closed succesfully")
 
+        # Encrypt the files at exit
         EncryptLibrary.encryptFiles(dataLocation)
