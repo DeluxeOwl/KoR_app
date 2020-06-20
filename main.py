@@ -218,12 +218,13 @@ if __name__ == "__main__":
         print("Cannot create KorData, directory already exists.")
     try:
         '''Start the user database connection'''
-        database_path = 'users.db'
+        absolute_path = sys.path[0]
+        database_path = absolute_path+'/users.db'
         conn = sqlite3.connect(database_path)
         cursor = conn.cursor()
 
         '''Start the group database connection'''
-        group_database_path = 'groups.db'
+        group_database_path = absolute_path+'/groups.db'
         connGroup = sqlite3.connect(group_database_path)
         cursorGroup = connGroup.cursor()
 
