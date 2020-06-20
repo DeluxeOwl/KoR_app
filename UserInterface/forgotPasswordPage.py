@@ -1,12 +1,13 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-
+import sys
 
 class Ui_ForgotPasswordWindow(object):
     def setupUi(self, ForgotPasswordWindow):
         ForgotPasswordWindow.setObjectName("ForgotPasswordWindow")
         ForgotPasswordWindow.resize(730, 730)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("./images/app_icon.png"),
+        absolute_path=sys.path[0]
+        icon.addPixmap(QtGui.QPixmap(absolute_path+"/images/app_icon.png"),
                        QtGui.QIcon.Normal, QtGui.QIcon.Off)
         ForgotPasswordWindow.setWindowIcon(icon)
         self.centralwidget = QtWidgets.QWidget(ForgotPasswordWindow)
