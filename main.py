@@ -13,6 +13,7 @@ from BackEndActions.EncryptLibrary import encryptFiles
 import sys
 import os
 import sqlite3
+import subprocess
 
 # lastWindow is for checking if the last window was a groups window
 # and if it was,we display the files in UI_LoggedWindow
@@ -150,7 +151,54 @@ def switchToWindow(windowToSwitchTo, currentUser=None, lastWindow=None):
         )
 
 
+def checkForGuests(conn, cursor, connGroup, cursorGroup):
+
+    # time in hours
+    maximumTime = 8
+
+    cursor.execute(
+        "SELECT username,CAST((julianday(DATETIME(\"now\")) - julianday(dateCreated))*24 AS real) AS TimeOffInHours FROM user_info WHERE role=\"Guest\"")
+    for row in cursor.fetchall():
+        guestName = row[0]
+        timeRemaining = maximumTime-float(row[1])
+
+        if timeRemaining <= 0:
+
+            # Deleting from the users database
+            cursor.execute(
+                "SELECT * FROM user_info WHERE username=?", (guestName,))
+            for first_row in cursor.fetchall():
+                userDirectory = first_row[3]
+                print("Deleting directory", userDirectory)
+                subprocess.run(['rm', '-rf', userDirectory], check=True)
+
+                cursor.execute(
+                    "DELETE FROM user_info WHERE username=?", (guestName,))
+
+                conn.commit()
+
+            # Deleting from the groups database
+            cursorGroup.execute(
+                "DELETE FROM group_info WHERE groupLeader=?", (guestName,))
+            connGroup.commit()
+
+            cursorGroup.execute("SELECT * FROM group_info")
+
+            for values in cursorGroup.fetchall():
+                groupName = values[1]
+                members = values[2]
+
+                members = members.split()
+                if guestName in members:
+                    members.remove(guestName)
+                    members = ' '.join(members)
+                    cursorGroup.execute(
+                        "UPDATE group_info SET members=? WHERE groupName=?", (members, groupName))
+                    connGroup.commit()
+
+
 if __name__ == "__main__":
+
     try:
         dataLocation = os.environ['HOME']+"/KorData"
         os.mkdir(dataLocation)
@@ -180,6 +228,7 @@ if __name__ == "__main__":
                                             directory text,
                                             secQuestion text,
                                             secAnswer text,
+                                            dateCreated text,
                                             UNIQUE(username))''')
             conn.commit()
 
@@ -198,11 +247,12 @@ if __name__ == "__main__":
             ''' SELECT COUNT(*) FROM user_info WHERE username='admin' ''')
         if cursor.fetchone()[0] == 0:
             cursor.execute(
-                "INSERT INTO user_info VALUES (?,?,?,?,?,?)", ('admin', EncryptLibrary.hashPassword('admin1!'), 'Admin', dataLocation, "", ""))
+                "INSERT INTO user_info VALUES (?,?,?,?,?,?,DATETIME(\"now\"))", ('admin', EncryptLibrary.hashPassword('admin1!'), 'Admin', dataLocation, "", "",))
             conn.commit()
 
         """--------------------"""
-
+        # Check for guest accounts that are overdue and delete them
+        checkForGuests(conn, cursor, connGroup, cursorGroup)
         app = QtWidgets.QApplication(sys.argv)
 
         """ This needs to be in main only for the first page """
@@ -227,6 +277,8 @@ if __name__ == "__main__":
         sys.exit(app.exec_())
     finally:
         print("Closing databases ...")
+        # Check for guest accounts that are overdue and delete on exit
+        checkForGuests(conn, cursor, connGroup, cursorGroup)
         conn.close()
         connGroup.close()
         print("Databases closed succesfully")

@@ -63,11 +63,15 @@ def registerButtonClicked(ui, switchBack, dataLocation, conn=None, c=None):
     else:
         # Use values as tuple,secure
         dirLocation = dataLocation+"/"+username
-        os.mkdir(dirLocation)
-        tmp = (username, EncryptLibrary.hashPassword(
-            password), role, dirLocation, secQuestion, secAnswer)
         try:
-            c.execute("INSERT INTO user_info VALUES (?,?,?,?,?,?)", tmp)
+            os.mkdir(dirLocation)
+        except FileExistsError:
+            print("Error,directory already exists")
+        tmp = (username, EncryptLibrary.hashPassword(
+            password), role, dirLocation, secQuestion, secAnswer,)
+        try:
+            c.execute(
+                "INSERT INTO user_info VALUES (?,?,?,?,?,?,DATETIME(\"now\"))", tmp)
             switchBack(Ui_MainWindow)
         except sqlite3.IntegrityError:  # if user is already taken
             print("Username already taken")
@@ -405,7 +409,7 @@ def deleteUserButtonClicked(ui, conn, cursor, connGroup, cursorGroup):
             members = ' '.join(members)
             cursorGroup.execute(
                 "UPDATE group_info SET members=? WHERE groupName=?", (members, groupName))
-            conn.commit()
+            connGroup.commit()
 
     ui.displayGroupUsers(connGroup, cursorGroup, "admin")
 
