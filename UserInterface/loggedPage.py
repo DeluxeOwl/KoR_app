@@ -1,24 +1,18 @@
-# -*- coding: utf-8 -*-
-
-# Form implementation generated from reading ui file 'dashboard.ui'
-#
-# Created by: PyQt5 UI code generator 5.14.2
-#
-# WARNING! All changes made in this file will be lost!
-
-
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 from UserInterface.dialog import Ui_Dialog
+
 import subprocess
 import os
-
+import sys
 
 class Ui_LoggedWindow(object):
     def setupUi(self, LoggedWindow):
         LoggedWindow.setObjectName("LoggedWindow")
         LoggedWindow.resize(730, 730)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("./images/app_icon.png"),
+        absolute_path=sys.path[0]
+        icon.addPixmap(QtGui.QPixmap(absolute_path+"/images/app_icon.png"),
                        QtGui.QIcon.Normal, QtGui.QIcon.Off)
         LoggedWindow.setWindowIcon(icon)
         self.centralwidget = QtWidgets.QWidget(LoggedWindow)
@@ -207,10 +201,10 @@ class Ui_LoggedWindow(object):
                 # treat admin case
                 if self.labelUsername.text() != "admin":
                     filePathIfNoFiles = os.environ['HOME']+"/" + \
-                        "KorData"+"/" + self.labelUsername.text()+"/"+filename
+                        ".KorData"+"/" + self.labelUsername.text()+"/"+filename
                 else:
                     filePathIfNoFiles = os.environ['HOME']+"/" + \
-                        "KorData"+"/" + filename
+                        ".KorData"+"/" + filename
                 subprocess.run(['touch', filePathIfNoFiles], check=True)
                 dialog.done(0)
             elif os.path.isdir(file_path):

@@ -1,14 +1,5 @@
-# -*- coding: utf-8 -*-
-
-# Form implementation generated from reading ui file 'dialog.ui'
-#
-# Created by: PyQt5 UI code generator 5.14.2
-#
-# WARNING! All changes made in this file will be lost!
-
-
 from PyQt5 import QtCore, QtGui, QtWidgets
-
+import sys
 
 class Ui_Dialog(object):
 
@@ -17,7 +8,8 @@ class Ui_Dialog(object):
         Dialog.resize(400, 250)
         Dialog.setMaximumSize(QtCore.QSize(500, 300))
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("./images/app_icon.png"),
+        absolute_path=sys.path[0]
+        icon.addPixmap(QtGui.QPixmap(absolute_path+"/images/app_icon.png"),
                        QtGui.QIcon.Normal, QtGui.QIcon.Off)
         Dialog.setWindowIcon(icon)
         self.gridLayout = QtWidgets.QGridLayout(Dialog)

